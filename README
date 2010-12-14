@@ -1,0 +1,7 @@
+Initialize git repository and commit to github:
+
+$ git init
+$ git add README 
+$ git commit -m 'first commit'
+$ git remote add origin git@github.com:backalor/dotfiles.git
+$ git push origin master
