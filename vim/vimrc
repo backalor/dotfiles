@@ -1,0 +1,35 @@
+" Show line numbers
+set number
+
+" Show matching braces
+set showmatch
+
+" Incremental search with ignore case (except explicit caps)
+set incsearch
+set ic
+set smartcase
+
+" Makes vim behave in a more useful way than vi-compatible mode
+set nocompatible
+
+" Set tab character to 4 characters
+set tabstop=4
+
+" Turn tabs into whitespace
+" set expandtab
+
+" Syntax highlighting
+syntax enable
+
+" Fold method
+set foldmethod=syntax
+set nofoldenable
+set foldlevel=1
+
+" Make any text wider than 80 char highlight in red
+highlight OverLength ctermbg=red ctermfg=white guibg=#592929
+match OverLength /\%81v.\+/
+
+" Tag file
+" set tags=
+
