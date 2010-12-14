@@ -1,0 +1,5 @@
+alias ls='ls -GF --color'
+alias grep='grep -nH --color'
+
+export CVSEDITOR=vi
+export GIT_EDITOR=vi
