@@ -12,11 +12,13 @@ set smartcase
 " Makes vim behave in a more useful way than vi-compatible mode
 set nocompatible
 
-" Set tab character to 4 characters
+" Set tab character to 4 characters for hardtab
 set tabstop=4
+set shiftwidth=4
 
-" Turn tabs into whitespace
+" Turn tabs into whitespace (softtab)
 " set expandtab
+" set softtabstop=4
 
 " Syntax highlighting
 syntax enable
