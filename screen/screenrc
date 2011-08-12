@@ -1,0 +1,4 @@
+startup_message off
+
+hardstatus alwayslastline
+hardstatus string "%{kg}%{kG}%50>%-w%{ky}%n %t%{-}%+w%{-} %>%=%{ky}Ctrl-A ?%{-} for help"
