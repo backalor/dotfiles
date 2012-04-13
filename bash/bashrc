@@ -1,5 +1,11 @@
 alias ls='ls -GF --color'
 alias grep='grep -nH --color'
 
+export LS_OPTIONS='--color=auto'
+export CLICOLOR=1
+export LSCOLORS=gxex
+export PS1="\u@\h:\w$ "
+export LC_CTYPE=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
 export CVSEDITOR=vi
 export GIT_EDITOR=vi
