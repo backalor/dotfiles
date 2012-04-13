@@ -1,0 +1,2 @@
+text/html; w3m %s; nametemplate=%s.html 
+text/html; w3m -I %{charset} -T text/html -dump; nametemplate=%s.html; copiousoutput
