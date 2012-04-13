@@ -37,3 +37,6 @@ match OverLength /\%81v.\+/
 
 " Change text encoding to Japanese Shift-JIS with Ctrl-J
 :map <C-j> :set encoding=sjis<CR>:set fileencodings=cp932<CR>:e!<CR>
+
+" Highlight current line
+set cursorline
