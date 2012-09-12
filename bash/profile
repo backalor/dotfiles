@@ -1,9 +1,0 @@
-alias ls='ls -GF'
-alias grep='grep -n'
-
-export PS1="\u@[\t][\w]$ ";
-
-set meta-flag on
-set input-meta on
-set output-meta on
-set convert-meta off
