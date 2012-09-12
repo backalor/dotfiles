@@ -1,0 +1,48 @@
+##########################################################################
+# Main configuration file for Mutt
+#
+# Note:
+#       Many comments and settings come from Sven Guckes .muttrc
+##########################################################################
+
+# Use default configuration
+# source "/etc/Muttrc"
+
+
+# Set the email address you want as your default 'from' address
+set realname	= "backalor"
+set from		= "backalor@backlor.com"
+set use_from	= yes
+
+# Use msmtp to send outgoing mail
+set sendmail	= "/usr/local/bin/msmtp -d"
+
+# Set the editor to vi
+set editor		= "vim +13 -c 'set tw=72 ft=mail noautoindent'"
+
+# Tell mutt to use the Mbox format
+set mbox_type	= mbox
+
+# Configure the locations of the common folders
+set mask		= "!^\\.[^.]"
+set folder		= "$HOME/Mail"
+set mbox		= "+Inbox"
+set record		= "+Sent"
+set postponed	= "+Drafts"
+set spoolfile	= "+Inbox"
+
+# Set up mailboxes by scanning for all subfolders in $Home/Mail
+mailboxes		= Inbox
+#mailboxes `echo en "! + "; find $HOME/Mail -maxdepth 1 -type d -name ".*" -print0 | xargs -0 -I xxx echo "+"xxx`
+
+# Add macros to make the folder browser usable by always using the mailboxes setup above
+macro index c "<change-folder>?<toggle-mailboxes>" "open a different folder"
+macro pager c "<change-folder>?<toggle-mailboxes>" "open a different folder"
+
+# To additionally get straight to the folder browser when copying, moving and attaching mail
+macro index C "<copy-message>?<toggle-mailboxes>" "copy a message to a mailbox"
+macro index M "<save-message>?<toggle-mailboxes>" "move a message to a mailbox"
+macro compose A "<attach-message>?<toggle-mailboxes>" "attach message(s) to this message"
+
+# Beep when a new message arrives
+set beep_new
