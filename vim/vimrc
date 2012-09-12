@@ -21,6 +21,7 @@ set shiftwidth=4
 " set softtabstop=4
 
 " Syntax highlighting
+" syntax on [os x]
 syntax enable
 
 " Fold method
@@ -37,3 +38,15 @@ match OverLength /\%81v.\+/
 
 " Change text encoding to Japanese Shift-JIS with Ctrl-J
 :map <C-j> :set encoding=sjis<CR>:set fileencodings=cp932<CR>:e!<CR>
+
+" Set the background as dark
+set bg=dark
+
+" Enable
+filetype plugin on
+
+" Disable arrow keys to force learning hjkl
+nnoremap <up> <nop>
+nnoremap <down> <nop>
+nnoremap <left> <nop>
+nnoremap <right> <nop>
