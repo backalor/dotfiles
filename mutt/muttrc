@@ -20,13 +20,13 @@ set smtp_url			= 'smtps://user@smtp.domain.com'
 # Set the editor to vi
 set editor				= "vim +13 -c 'set tw=72 ft=mail noautoindent'"
 
-# XXX
+# Customize the message index display
 set index_format		= '%4C %Z %{%b %D %Y} %-15.15L (%?l?%4l&%4c?) %s'
 
-# XXX
+# Allow messages with no subject
 set abort_nosubject		= no
 
-# XXX
+# Apply function to all tagged messages
 set auto_tag			= yes
 
 # MIME options
@@ -55,7 +55,7 @@ set send_charset		= 'us-ascii:iso-8859-1:iso-2022-jp:utf-8'
 
 # Configure the locations of the common folders
 set mask				= "!^\\.[^.]"
-set folder				= "/Volumes/Drobo/mail"
+set folder				= "/mutt/mail"
 set mbox				= "+inbox"
 set record				= "+sent"
 set postponed			= "+drafts"
@@ -97,6 +97,7 @@ color tilde      magenta      default
 color tree       magenta      default
 
 # PGP
+set certificate_file 			= '~/.mutt_certificates'
 set pgp_decode_command			= "gpg %?p?--passphrase-fd 0? --no-verbose --batch --output - %f"
 set pgp_verify_command			= "gpg --no-verbose --batch --output - --verify %s %f"
 set pgp_decrypt_command			= "gpg --passphrase-fd 0 --no-verbose --batch --output - %f"
