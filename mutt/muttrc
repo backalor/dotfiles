@@ -42,8 +42,9 @@ set ssl_verify_host		= no
 # Set the sort order for the mail browser
 set sort_browser		= 'date'
 
-# View HTML mails properly
+# View HTML mails properly, but always view the plain text if it's available
 auto_view text/html
+alternative_order text/plain
 
 # Tell mutt to use the Mbox format
 set mbox_type			= mbox
