@@ -1,0 +1,19 @@
+#
+# Use brew install mutt --sidebar-patch
+#
+
+# Sidebar Patch ------------------------------------------------------------------
+set sidebar_delim   	= ' ! '
+set sidebar_visible 	= no
+set sidebar_width   	= 24
+set sidebar_sort		= yes
+set status_chars  		= " *%A"
+set status_format 		= "───[ Folder: %f ]───[%r%m messages%?n? (%n new)?%?d? (%d to delete)?%?t? (%t tagged)? ]───%>─%?p?( %p postponed )?───"
+color sidebar_new color221 color233
+macro index b "<enter-command>toggle sidebar_visible<enter>"	# b toggles sidebar visibility
+macro pager	b "<enter-command>toggle sidebar_visible<enter>"	# b toggles sidebar visibility
+
+# Key Bindings ------------------------------------------------------------------
+bind index,pager \Cn   		sidebar-next
+bind index,pager \Cp     	sidebar-prev
+bind index,pager o  		sidebar-open

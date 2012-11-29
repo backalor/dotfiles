@@ -20,8 +20,10 @@ set shiftwidth=4
 " set expandtab
 " set softtabstop=4
 
-" Syntax highlighting
+" Syntax highlighting and colorscheme
 syntax enable
+set bg=dark
+colorscheme solarized
 
 " Fold method
 set foldmethod=syntax
@@ -29,19 +31,16 @@ set nofoldenable
 set foldlevel=1
 
 " Make any text wider than 80 char highlight in red
-highlight OverLength ctermbg=red ctermfg=white guibg=#592929
-match OverLength /\%81v.\+/
+"highlight OverLength ctermbg=red ctermfg=white guibg=#592929
+"match OverLength /\%81v.\+/
 
 " Tag file
-" set tags=
+set tags=
 
 " Change text encoding to Japanese Shift-JIS with Ctrl-J
 :map <C-j> :set encoding=sjis<CR>:set fileencodings=cp932<CR>:e!<CR>
 
-" Set the background as dark
-set bg=dark
-
-" Enable
+" Enable 
 filetype plugin on
 
 " Disable arrow keys to force learning hjkl
@@ -50,5 +49,14 @@ nnoremap <down> <nop>
 nnoremap <left> <nop>
 nnoremap <right> <nop>
 
-" Highlight current line
-set cursorline
+" Some tricks for mutt
+" F1 through F3 re-wraps paragraphs in useful ways
+augroup MUTT
+  au BufRead ~/.mutt/temp/mutt* set spell " <-- vim 7 required
+  au BufRead ~/.mutt/temp/mutt* nmap  <F1>  gqap
+  au BufRead ~/.mutt/temp/mutt* nmap  <F2>  gqqj
+  au BufRead ~/.mutt/temp/mutt* nmap  <F3>  kgqj
+  au BufRead ~/.mutt/temp/mutt* map!  <F1>  <ESC>gqapi
+  au BufRead ~/.mutt/temp/mutt* map!  <F2>  <ESC>gqqji
+  au BufRead ~/.mutt/temp/mutt* map!  <F3>  <ESC>kgqji
+augroup END

@@ -1,0 +1,14 @@
+[retriever]
+type = SimplePOP3SSLRetriever
+server = mailserver
+username = username
+password = password
+
+[destination]
+type = Mboxrd
+path = /Users/backalor/Mail/inbox
+
+[options]
+delete = yes
+delivered_to = no
+verbose = 2

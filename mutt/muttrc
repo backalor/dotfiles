@@ -3,120 +3,142 @@
 #
 # Note:
 #       Many comments and settings come from Sven Guckes .muttrc
+#       and Steve Losh's excellent tutorial at:
+#
+#       http://stevelosh.com/blog/2012/10/the-homely-mutt/
 ##########################################################################
 
-# Use default configuration
-# source "/etc/Muttrc"
-
-# Set the email address you want as your default 'from' address
-set realname			= "John Doe"
-set from				= "user@domain.com"
+# Basic Options -------------------------------------------------------------
+set realname			= "Backalor"
+set from				= "backalor@backalor.comg"
 set use_from			= yes
+set edit_headers		= yes					# Show headers when composing mail
+set fast_reply			= yes					# Skip asking for address and subject when replying
+set fcc_attach			= yes					# Save attachments with the body
+set mime_forward		= no					# Forward attachments as part of the body
+set forward_format 		= "Fwd: %s"				# Subject of forwarded mails
+set forward_decode		= yes					# Decode on forwarding
+set attribution 		= "On %d, %n wrote:"	# Format of quoting header
+set reply_to			= yes					
+set reverse_name		= yes
+set include				= yes					# Include message in replies
+set forward_quote		= yes					# Include message in fowards
 
-# Use built-in smtp to send outgoing mail
-set smtp_pass			= 'password'
-set smtp_url			= 'smtps://user@smtp.domain.com'
+# Use msmtp to send outgoing mail
+set sendmail			= "/usr/local/bin/msmtp -a backalor"
+set sendmail_wait		= 0
 
 # Set the editor to vi
-set editor				= "vim +13 -c 'set tw=72 ft=mail noautoindent'"
-
-# Customize the message index display
-set index_format		= '%4C %Z %{%b %D %Y} %-15.15L (%?l?%4l&%4c?) %s'
-
-# Allow messages with no subject
-set abort_nosubject		= no
-
-# Apply function to all tagged messages
-set auto_tag			= yes
-
-# MIME options
-set mime_forward		= yes
-set mime_forward_rest 	= yes
+set editor				= "vim +/^$ ++1 -c 'set tw=72 ft=mail noautoindent'"
 
 # Set up preview pane for messages
-set pager_index_lines 	= '6'
+set pager_index_lines 	= 10 	# number of index lines to show
+set pager_context 		= 3     # number of context lines to show
+set pager_stop          = yes   # don't go to next message automatically
+set menu_scroll         = yes   # scroll in menus
+set tilde               = yes   # show tildes like in vim
+set markers             = no 	# no ugly plus signs
 
-# Accept server certificates from a different host than localhost
-set ssl_verify_host		= no
+# Tell mutt to use the Maildir format
+set mbox_type			= Maildir
 
-# Set the sort order for the mail browser
-set sort_browser		= 'date'
+
+# Look and feel -----------------------------------------------------------------
+set index_format		= '%4C [%Z] %{%D} %-25.25L (%?l?%4l&%4c?) %s'	# Customize the messaage index display
+set sort_browser		= reverse-date									# Sort mails in reverse date order (no threads)
+set sort_aux			= reverse-last-date-received					# Sort mails in reverse date order (threads)
+set sort				= threads										# Enable mail threads
+set uncollapse_jump		= yes											# Don't jump to next unread message when a thread is collapsed
+
+# Header Options
+ignore *                                		# ignore all headers
+unignore from: to: cc: bcc: date: subject:		# show only these
+unhdr_order *                           		# some distros order things by default
+hdr_order from: to: cc: bcc: date: subject:  	# and in this order
 
 # View HTML mails properly, but always view the plain text if it's available
 auto_view text/html
-alternative_order text/plain
+alternative_order text/plain text/enriched text/html
 
-# Tell mutt to use the Mbox format
-set mbox_type			= mbox
+# Advanced Options ------------------------------------------------------------------
+set confirmappend		= no	# Don't confirm appending messages to mailboxes
+set move				= no	# Don't confirm moving read messages
+set delete				= yes	# Actually delete messages marked for deletion on exit
+set quit				= yes	# Make 'quit' and 'exit' actually quit mutt
+set mark_old			= no	# Don't mark messages as old
+set beep_new			= no	# Don't beep on new messages
+set pipe_decode			= yes	# Weed headers and attempt to PGP/MIME decode the messages first
+set thorough_search		= yes	# Strip headers and eval mimes before searching
+set auto_tag			= yes	# Apply function to all tagged messages
+set abort_nosubject		= no	# Allow messages with no subject
+set mime_forward		= yes
+set mime_forward_rest 	= yes
+set reply_regexp 		= "^(([Rr][Ee]?(\[[0-9]+\])?: *)?(\[[^]]+\] *)?)*"
+set quote_regexp 		= "^( {0,4}[>|:#%]| {0,4}[a-z0-9]+[>|]+)+"
 
 # Set the proper charsets
 set assumed_charset		= 'iso-2022-jp:euc-jp:shift_jis:utf-8'
 set attach_charset		= 'iso-2022-jp:euc-jp:shift_jis:utf-8'
 set send_charset		= 'us-ascii:iso-8859-1:iso-2022-jp:utf-8'
 
-# Configure the locations of the common folders
-set mask				= "!^\\.[^.]"
-set folder				= "/mutt/mail"
-set mbox				= "+inbox"
-set record				= "+sent"
-set postponed			= "+drafts"
-set spoolfile			= "+inbox"
+
+# Set Up Folders And Paths -------------------------------------------------------
+set mask				= "[^.]"
+set folder				= "~/Mail"
+set record				= "+.sent"
+set postponed			= "+.drafts"
+set spoolfile			= "~/Mail"
+
+set alias_file       	= ~/.mutt/aliases         	# where to store aliases
+set header_cache     	= ~/.mutt/cache/headers 	# where to store headers
+set message_cachedir 	= ~/.mutt/cache/bodies  	# where to store bodies
+set mailcap_path     	= ~/.mutt/mailcap       	# entries for filetypes
+set tmpdir           	= ~/.mutt/temp          	# where to keep temp files
+set signature        	= ~/.mutt/sig           	# my signature file
 
 # Set up mailboxes by scanning for all subfolders in $MAILDIR/mail
-mailboxes				= inbox
-#mailboxes `echo en "! + "; find $HOME/Mail -maxdepth 1 -type d -name ".*" -print0 | xargs -0 -I xxx echo "+"xxx`
+mailboxes				= ! +.drafts +.sent +.search
+
+
+# Key Bindings ------------------------------------------------------------------
+bind index gg				first-entry
+bind index G				last-entry
+bind index,pager R			group-reply
+bind index <space>			collapse-thread
+bind pager k  				previous-line
+bind pager j  				next-line
+bind pager gg 				top
+bind pager G  				bottom
+bind compose p 				postpone-message
+bind index p 				recall-message
+bind index,pager \Cf		next-page
+bind index,pager \Cb		previous-page
+
+
+# Macros ------------------------------------------------------------------------
+macro index,pager I   "<change-folder>!<enter>"   "go to Inbox"
+
+# Ctrl-R to mark all as read
+macro index \Cr "T~U<enter><tag-prefix><clear-flag>N<untag-pattern>.<enter>" "mark all messages as read"
 
 # Add macros to make the folder browser usable by always using the mailboxes setup above
-macro index c "<change-folder>?<toggle-mailboxes>" "open a different folder"
-macro pager c "<change-folder>?<toggle-mailboxes>" "open a different folder"
+macro index,pager c "<change-folder>?<toggle-mailboxes><tab>" "open a different folder"
+# macro pager c "<change-folder>?<toggle-mailboxes>" "open a different folder"
 
 # To additionally get straight to the folder browser when copying, moving and attaching mail
-macro index C "<copy-message>?<toggle-mailboxes>" "copy a message to a mailbox"
-macro index M "<save-message>?<toggle-mailboxes>" "move a message to a mailbox"
-macro compose A "<attach-message>?<toggle-mailboxes>" "attach message(s) to this message"
+macro index,pager C "<copy-message>?<toggle-mailboxes><tab>" "copy a message to a mailbox"
+macro index,pager M "<save-message>?<toggle-mailboxes><tab>" "move a message to a mailbox"
+macro compose A "<attach-message>?<toggle-mailboxes><tab>" "attach message(s) to this message"
 
-# Beep when a new message arrives
-set beep_new
-
-# Macros
 # Save attachments to dropbox
-macro attach W <tag-prefix><save-entry><kill-line>/dropbox/attachments
+macro attach W <tag-prefix><save-entry><kill-line>/Users/backalor/Dropbox/Attachments
 
-# Colors
-color attachment brightmagenta default
-color error      brightred    default
-color hdrdefault red          default
-color indicator  brightyellow red
-color markers    brightcyan   default
-color message    brightcyan   default
-color normal     default      default
-color quoted     blue         default
-color search     default      green
-color signature  red          default
-color status     yellow       blue
-color tilde      magenta      default
-color tree       magenta      default
+# Search using notmuch
+macro index S "<enter-command>unset wait_key<enter><shell-escape>mutt-notmuch-py.py /Users/backalor/Mail/.search<enter><change-folder-readonly>+.search<enter>" "search mail (using notmuch)"
 
-# PGP
-set certificate_file 			= '~/.mutt_certificates'
-set pgp_decode_command			= "gpg %?p?--passphrase-fd 0? --no-verbose --batch --output - %f"
-set pgp_verify_command			= "gpg --no-verbose --batch --output - --verify %s %f"
-set pgp_decrypt_command			= "gpg --passphrase-fd 0 --no-verbose --batch --output - %f"
-set pgp_sign_command			= "gpg --no-verbose --batch --output - --passphrase-fd 0 --armor --detach-sign --textmode %?a?-u %a? %f"
-set pgp_clearsign_command		= "gpg --no-verbose --batch --output - --passphrase-fd 0 --armor --textmode --clearsign %?a?-u %a? %f"
-set pgp_encrypt_only_command	= "pgpewrap gpg --batch --quiet --no-verbose --output - --encrypt --textmode --armor --always-trust --encrypt-to 0xFFFFFFFF -- -r %r -- %f"
-set pgp_encrypt_sign_command	= "pgpewrap gpg --passphrase-fd 0 --batch --quiet --no-verbose --textmode --output - --encrypt --sign %?a?-u %a? --armor --always-trust --encrypt-to 0xFFFFFFFF -- -r %r -- %f"
-set pgp_import_command			= "gpg --no-verbose --import -v %f"
-set pgp_export_command			= "gpg --no-verbose --export --armor %r"
-set pgp_verify_key_command		= "gpg --no-verbose --batch --fingerprint --check-sigs %r"
-set pgp_list_pubring_command	= "gpg --no-verbose --batch --with-colons --list-keys %r"
-set pgp_list_secring_command	= "gpg --no-verbose --batch --with-colons --list-secret-keys %r"
-set pgp_autosign				= no
-set pgp_sign_as					= 0xFFFFFFFF
-set pgp_replyencrypt			= yes
-set pgp_timeout					= 1800
-set pgp_good_sign				= "^gpg: Good signature from"
 
-# Pull in the aliases files
-set alias_file 			= '~/.mutt/aliases'
+# Source Other Configuration Files ------------------------------------------------
+source ~/.mutt/colors.muttrc
+source ~/.mutt/sidebar.muttrc
+source ~/.mutt/pgp.muttrc
 source $alias_file
