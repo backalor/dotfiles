@@ -1,11 +1,58 @@
+# Functions ---------------------------------------------------------------
+working_directory() {
+    dir=`pwd`
+    in_home=0
+    if [[ `pwd` =~ ^$HOME($|\/) ]]; then
+        dir="~${dir#$HOME}"
+        in_home=1
+    fi
+
+    if [[ `tput cols` -lt 110 ]]; then  # <-- Checking the term width
+        first="/`echo $dir | cut -d / -f 2`"
+        letter=${first:0:2}
+        if [[ $in_home == 1 ]]; then
+            letter="~$letter"
+        fi
+        proj=`echo $dir | cut -d / -f 3`
+        beginning="$letter/$proj"
+        end=`echo "$dir" | rev | cut -d / -f1 | rev`
+
+        if [[ $proj == "" ]]; then
+            echo $dir
+        elif [[ $proj == "~" ]]; then
+            echo $dir
+        elif [[ $dir =~ "$first/$proj"$ ]]; then
+            echo $beginning
+        elif [[ $dir =~ "$first/$proj/$end"$ ]]; then
+            echo "$beginning/$end"
+        else
+            echo "$beginning/…/$end"
+        fi
+    else
+        echo $dir
+    fi
+}
+
+prompt() {
+    if [[ $? -eq 0 ]]; then
+        exit_status='\[\e[0;34m\]› \[\e[00m\]'
+    else
+        exit_status='\[\e[0;31m\]› \[\e[00m\]'
+    fi
+
+    prompt='\[\e[0;32m\][\#]\[\e[00m\]\[\e[1;31m\][\u]\[\e[00m\]\[\e[0;33m\]$(working_directory)\[\e[00m\]'
+    PS1=$prompt$exit_status
+}
+
 # Aliases -----------------------------------------------------------------
-alias ls='ls -GF'
 alias grep='grep -nH'
 alias lock="open /System/Library/Frameworks/ScreenSaver.framework/Versions/A/Resources/ScreenSaverEngine.app"
+alias t='python ~/Code/t/t.py --task-dir ~/Dropbox/Tasks --list tasks --delete-if-empty'
 
 
 # Variables ---------------------------------------------------------------
-export PS1="[\#][\u@\h][\w] ";
+export PROMPT_COMMAND=prompt
+export PS2="--> "
 export PATH=$PATH:/usr/local/sbin:/usr/local/bin:/Users/backalor/Scripts
 export GPGKEY=FFFFFFFF
 export LC_CTYPE=en_US.UTF-8
