@@ -45,9 +45,9 @@ set mbox_type			= Maildir
 
 # Look and feel -----------------------------------------------------------------
 set index_format		= '%4C [%Z] %{%D} %-25.25L (%?l?%4l&%4c?) %s'	# Customize the messaage index display
-set sort_browser		= reverse-date									# Sort mails in reverse date order (no threads)
+set sort_browser		= alpha											# Sort entries in the file browser
 set sort_aux			= reverse-last-date-received					# Sort mails in reverse date order (threads)
-set sort				= threads										# Enable mail threads
+set sort				= reverse-date-received							# Sort with the newest at the top
 set uncollapse_jump		= yes											# Don't jump to next unread message when a thread is collapsed
 
 # Header Options
