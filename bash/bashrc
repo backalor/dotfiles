@@ -45,15 +45,16 @@ prompt() {
 }
 
 # Aliases -----------------------------------------------------------------
-alias grep='grep -nH'
+alias ls='ls -GF'
+#alias grep='grep -nH'
 alias lock="open /System/Library/Frameworks/ScreenSaver.framework/Versions/A/Resources/ScreenSaverEngine.app"
 alias t='python ~/Code/t/t.py --task-dir ~/Dropbox/Tasks --list tasks --delete-if-empty'
-
+alias ifconfig.me='curl ifconfig.me'
 
 # Variables ---------------------------------------------------------------
 export PROMPT_COMMAND=prompt
 export PS2="--> "
-export PATH=$PATH:/usr/local/sbin:/usr/local/bin:/Users/backalor/Scripts
+export PATH=/usr/local/sbin:/usr/local/bin:/Users/backalor/Scripts:$PATH
 export GPGKEY=FFFFFFFF
 export LC_CTYPE=en_US.UTF-8
 export LC_ALL=en_US.UTF-8

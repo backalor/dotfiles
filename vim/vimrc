@@ -60,3 +60,6 @@ augroup MUTT
   au BufRead ~/.mutt/temp/mutt* map!  <F2>  <ESC>gqqji
   au BufRead ~/.mutt/temp/mutt* map!  <F3>  <ESC>kgqji
 augroup END
+
+" Map key for TagList plugin (show functions)
+map ff :TlistOpen<CR>
