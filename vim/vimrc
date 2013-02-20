@@ -1,3 +1,9 @@
+" Pathogen plugin (to keep all other plugins in plugins/)
+execute pathogen#infect('plugins/{}')
+
+" Powerline plugin
+let g:Powerline_symbols = 'fancy'
+
 " Show line numbers
 set number
 
@@ -5,9 +11,12 @@ set number
 set showmatch
 
 " Incremental search with ignore case (except explicit caps)
+" Highlight all search results, and use \q to unhighight
 set incsearch
 set ic
 set smartcase
+set hlsearch
+nmap \q :nohlsearch<CR>
 
 " Makes vim behave in a more useful way than vi-compatible mode
 set nocompatible
@@ -41,7 +50,7 @@ set tags=
 :map <C-j> :set encoding=sjis<CR>:set fileencodings=cp932<CR>:e!<CR>
 
 " Enable 
-filetype plugin on
+filetype plugin indent on
 
 " Disable arrow keys to force learning hjkl
 nnoremap <up> <nop>
@@ -63,3 +72,19 @@ augroup END
 
 " Map key for TagList plugin (show functions)
 map ff :TlistOpen<CR>
+
+" Map key for CtrlP
+nmap ; :CtrlPMixed<CR>
+
+" Make j/k move one single row instead of one single line
+nnoremap j gj
+nnoremap k gk
+
+" Hotkeys for toggle of line numbers and paste mode
+nmap \l :setlocal number!<CR>
+nmap \p :set paste!<CR>
+
+" Make sure 256 color terminal support is used
+if $TERM == "xterm-256color" || $TERM == "screen-256color" || $COLORTERM == "gnome-terminal"
+    set t_Co=256
+endif
