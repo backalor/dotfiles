@@ -39,6 +39,7 @@ repos=(
   https://github.com/kien/ctrlp.vim.git
   https://github.com/scrooloose/syntastic.git
   https://github.com/tpope/vim-pathogen.git
+  https://github.com/vim-scripts/taglist.vim.git
   )
 
 # Here's a list of everything else to download in the format
