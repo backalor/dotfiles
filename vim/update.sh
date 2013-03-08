@@ -37,9 +37,12 @@ repos=(
   https://github.com/Lokaltog/vim-powerline.git
   https://github.com/altercation/vim-colors-solarized.git
   https://github.com/kien/ctrlp.vim.git
-  https://github.com/scrooloose/syntastic.git
   https://github.com/tpope/vim-pathogen.git
   https://github.com/vim-scripts/taglist.vim.git
+  https://github.com/airblade/vim-gitgutter.git
+  https://github.com/tpope/vim-sleuth.git
+  https://github.com/Lokaltog/vim-easymotion.git
+  https://github.com/goldfeld/vim-seek.git
   )
 
 # Here's a list of everything else to download in the format

@@ -40,16 +40,22 @@ prompt() {
         exit_status='\[\e[0;31m\]› \[\e[00m\]'
     fi
 
-    prompt='\[\e[0;32m\][\#]\[\e[00m\]\[\e[1;31m\][\u]\[\e[00m\]\[\e[0;33m\]$(working_directory)\[\e[00m\]'
+    prompt='\[\e[0;32m\][\#]\[\e[00m\]\[\e[1;31m\][\u\e[0;37m\]@\h\e[1;31m\]]\[\e[00m\]\[\e[0;33m\]$(working_directory)\[\e[00m\]'
     PS1=$prompt$exit_status
 }
 
 # Aliases -----------------------------------------------------------------
 alias ls='ls -GF'
-#alias grep='grep -nH'
 alias lock="open /System/Library/Frameworks/ScreenSaver.framework/Versions/A/Resources/ScreenSaverEngine.app"
 alias t='python ~/Code/t/t.py --task-dir ~/Dropbox/Tasks --list tasks --delete-if-empty'
 alias ifconfig.me='curl ifconfig.me'
+alias grep='grep 2>/dev/null -I --exclude *.tags --exclude-dir=.git'
+alias clea='clear'
+alias rls='ls'
+
+# Quick way to rebuild the Launch Services database and get rid
+# of duplicates in the Open With submenu.
+alias fixopenwith='/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -kill -r -domain local -domain system -domain user'
 
 # Variables ---------------------------------------------------------------
 export PROMPT_COMMAND=prompt

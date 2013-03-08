@@ -1,56 +1,70 @@
+" Plugins ------------------------------------------------------------ {{{
 " Pathogen plugin (to keep all other plugins in plugins/)
-execute pathogen#infect('plugins/{}')
+execute pathogen#infect('plugins/{}')	
 
-" Powerline plugin
 let g:Powerline_symbols = 'fancy'
+let g:EasyMotion_leader_key = '<Leader>'
+" }}}
 
-" Show line numbers
-set number
 
-" Show matching braces
-set showmatch
-
-" Incremental search with ignore case (except explicit caps)
-" Highlight all search results, and use \q to unhighight
-set incsearch
-set ic
-set smartcase
-set hlsearch
-nmap \q :nohlsearch<CR>
-
-" Makes vim behave in a more useful way than vi-compatible mode
-set nocompatible
-
-" Set tab character to 4 characters for hardtab
-set tabstop=4
-set shiftwidth=4
-
-" Turn tabs into whitespace (softtab)
-" set expandtab
-" set softtabstop=4
-
-" Syntax highlighting and colorscheme
-syntax enable
-set bg=dark
-colorscheme solarized
-
-" Fold method
-set foldmethod=syntax
-set nofoldenable
-set foldlevel=1
-
-" Make any text wider than 80 char highlight in red
-"highlight OverLength ctermbg=red ctermfg=white guibg=#592929
-"match OverLength /\%81v.\+/
+" General Options --------------------------------------------------- {{{
+let mapleader=","				" Set <leader> to ,
+set number						" Show line numbers
+set showmatch					" Show matching braces
+set cursorline					" Highlight the current line
+set incsearch					" Incremental search
+set ic							" Ignore case when searching ... 
+set smartcase					" ... except explicit CAPS
+set hlsearch					" Highlight all search results
+set nocompatible				" Makes vim behave in a more useful way than vi-compatible mode
+set tabstop=4					" Set tab size to 4 characters
+set shiftwidth=4				" Set autoindent tab size
+" set expandtab					" Insert spaces instead of tab character
+" set softtabstop=4				" Set soft tab to 4 characters
+syntax enable					" Enable syntax highlighting
+set bg=dark						" Set background to dark
+colorscheme solarized			" Use 'solarized' colorscheme
+set foldmethod=syntax			" Set the fold method to 'syntax'
+set nofoldenable				" Start with no folding
+set foldlevel=255				" Set the fold level to the highest value
+set laststatus=2				" Always show statusline
+filetype plugin indent on		" Enable filetype detection, and load the plugin and indent files for that filetype
 
 " Tag file
 set tags=
 
-" Change text encoding to Japanese Shift-JIS with Ctrl-J
-:map <C-j> :set encoding=sjis<CR>:set fileencodings=cp932<CR>:e!<CR>
+" Make sure 256 color terminal support is used
+if $TERM == "xterm-256color" || $TERM == "screen-256color" || $COLORTERM == "gnome-terminal"
+	set t_Co=256
+endif
 
-" Enable 
-filetype plugin indent on
+" Make any text wider than 80 char highlight in red
+"highlight OverLength ctermbg=red ctermfg=white guibg=#592929
+"match OverLength /\%81v.\+/
+" }}}
+
+
+" Key Mappings ------------------------------------------------------ {{{
+
+" Turn off highlighted search results
+nnoremap \q :nohlsearch<CR>
+
+" Change entire file between softtabs and hardtabs
+nnoremap \t :setlocal expandtab!<CR>:setlocal softtabstop=4<CR>:retab!<CR>
+nnoremap \T :setlocal noexpandtab<CR>:setlocal tabstop=4<CR>:setlocal shiftwidth=4<CR>:retab!<CR>
+
+" Hotkeys for toggle of line numbers and paste mode
+nnoremap \l :setlocal number!<CR>
+nnoremap \p :setlocal paste!<CR>
+
+" Code folding shortcuts
+nnoremap <space> zA			" Collapse current fold
+nnoremap [ zM				" Collapse entire file
+nnoremap ] zR				" Un-collapse entire file
+vnoremap <space> zf
+
+" Change text encoding to Japanese Shift-JIS with Ctrl-J
+nnoremap <C-j> :setlocal encoding=sjis<CR>:setlocal fileencodings=cp932<CR>:e!<CR>
 
 " Disable arrow keys to force learning hjkl
 nnoremap <up> <nop>
@@ -58,36 +72,29 @@ nnoremap <down> <nop>
 nnoremap <left> <nop>
 nnoremap <right> <nop>
 
-" Some tricks for mutt
-" F1 through F3 re-wraps paragraphs in useful ways
-augroup MUTT
-  au BufRead ~/.mutt/temp/mutt* set spell " <-- vim 7 required
-  au BufRead ~/.mutt/temp/mutt* nmap  <F1>  gqap
-  au BufRead ~/.mutt/temp/mutt* nmap  <F2>  gqqj
-  au BufRead ~/.mutt/temp/mutt* nmap  <F3>  kgqj
-  au BufRead ~/.mutt/temp/mutt* map!  <F1>  <ESC>gqapi
-  au BufRead ~/.mutt/temp/mutt* map!  <F2>  <ESC>gqqji
-  au BufRead ~/.mutt/temp/mutt* map!  <F3>  <ESC>kgqji
-augroup END
-
 " Map key for TagList plugin (show functions)
-map ff :TlistOpen<CR>
-
-" Map key for CtrlP
-nmap ; :CtrlPMixed<CR>
+nnoremap ff :TlistOpen<CR>
 
 " Make j/k move one single row instead of one single line
 nnoremap j gj
 nnoremap k gk
 
-" Hotkeys for toggle of line numbers and paste mode
-nmap \l :setlocal number!<CR>
-nmap \p :set paste!<CR>
+" Keymappings for easy editing for vimrc file
+nnoremap <leader>ev :vsplit $MYVIMRC<cr>
+nnoremap <leader>sv :source $MYVIMRC<cr>
+" }}}
 
-" Make sure 256 color terminal support is used
-if $TERM == "xterm-256color" || $TERM == "screen-256color" || $COLORTERM == "gnome-terminal"
-    set t_Co=256
-endif
 
-"Always show statusline
-set laststatus=2
+" Mutt Specific ----------------------------------------------------- {{{
+" F1 through F3 re-wraps paragraphs in useful ways
+augroup MUTT
+  au!
+  au BufRead ~/.mutt/temp/mutt* set spell " <-- vim 7 required
+  au BufRead ~/.mutt/temp/mutt* nmap  <F1>	gqap
+  au BufRead ~/.mutt/temp/mutt* nmap  <F2>	gqqj
+  au BufRead ~/.mutt/temp/mutt* nmap  <F3>	kgqj
+  au BufRead ~/.mutt/temp/mutt* map!  <F1>	<ESC>gqapi
+  au BufRead ~/.mutt/temp/mutt* map!  <F2>	<ESC>gqqji
+  au BufRead ~/.mutt/temp/mutt* map!  <F3>	<ESC>kgqji
+augroup END
+" }}}
