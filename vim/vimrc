@@ -41,6 +41,8 @@ endif
 " Make any text wider than 80 char highlight in red
 "highlight OverLength ctermbg=red ctermfg=white guibg=#592929
 "match OverLength /\%81v.\+/
+
+
 " }}}
 
 
@@ -80,8 +82,21 @@ nnoremap j gj
 nnoremap k gk
 
 " Keymappings for easy editing for vimrc file
-nnoremap <leader>ev :vsplit $MYVIMRC<cr>
-nnoremap <leader>sv :source $MYVIMRC<cr>
+nnoremap <leader>ev :vsplit $MYVIMRC<CR>
+nnoremap <leader>sv :source $MYVIMRC<CR>
+" }}}
+
+
+" Srt Specific ----------------------------------------------------- {{{
+augroup SRT
+  au!
+
+  " Recognize srt files for syntax highlighting
+  au BufRead,BufNewFile *.srt		setfiletype srt
+
+  " Move to the next subtitle in a srt file
+  au BufRead *.srt nnoremap nn :execute "normal! /^\\d\\+$\rjjzz:setlocal nohlsearch\r"<cr>
+augroup END
 " }}}
 
 
