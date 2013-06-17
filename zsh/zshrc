@@ -1,0 +1,114 @@
+# Color Table
+fg_black=%{$'\e[0;30m'%}
+fg_red=%{$'\e[0;31m'%}
+fg_green=%{$'\e[0;32m'%}
+fg_brown=%{$'\e[0;33m'%}
+fg_blue=%{$'\e[0;34m'%}
+fg_purple=%{$'\e[0;35m'%}
+fg_cyan=%{$'\e[0;36m'%}
+fg_lgray=%{$'\e[0;37m'%}
+fg_dgray=%{$'\e[1;30m'%}
+fg_lred=%{$'\e[1;31m'%}
+fg_lgreen=%{$'\e[1;32m'%}
+fg_yellow=%{$'\e[1;33m'%}
+fg_lblue=%{$'\e[1;34m'%}
+fg_pink=%{$'\e[1;35m'%}
+fg_lcyan=%{$'\e[1;36m'%}
+fg_white=%{$'\e[1;37m'%}
+#Text Background Colors
+bg_red=%{$'\e[0;41m'%}
+bg_green=%{$'\e[0;42m'%}
+bg_brown=%{$'\e[0;43m'%}
+bg_blue=%{$'\e[0;44m'%}
+bg_purple=%{$'\e[0;45m'%}
+bg_cyan=%{$'\e[0;46m'%}
+bg_gray=%{$'\e[0;47m'%}
+#Attributes
+at_normal=%{$'\e[0m'%}
+at_bold=%{$'\e[1m'%}
+at_italics=%{$'\e[3m'%}
+at_underl=%{$'\e[4m'%}
+at_blink=%{$'\e[5m'%}
+at_outline=%{$'\e[6m'%}
+at_reverse=%{$'\e[7m'%}
+at_nondisp=%{$'\e[8m'%}
+at_strike=%{$'\e[9m'%}
+at_boldoff=%{$'\e[22m'%}
+at_italicsoff=%{$'\e[23m'%}
+at_underloff=%{$'\e[24m'%}
+at_blinkoff=%{$'\e[25m'%}
+at_reverseoff=%{$'\e[27m'%}
+at_strikeoff=%{$'\e[29m'%}
+
+
+# Constants ---------------------------------------------------------------
+HISTIGNORE="&:ls:[bf]g:exit:reset:clear:cd:cd ..:cd.."
+HISTFILE=~/.zsh/histfile
+HISTSIZE=10000
+SAVEHIST=10000
+PROMPT="${fg_green}[%h]${fg_lred}[%n${fg_white}@%m${fg_lred}]${fg_brown}%~${fg_blue}› "
+path+=~/Scripts					# Append path
+path[1,0]=/usr/local/bin		# Prepend path
+path=($^path(N))				# Add all the paths only if they exist
+typeset -U PATH					# Remove any duplicates from PATH
+
+
+# Variables ---------------------------------------------------------------
+unsetopt beep		# Don't beep
+bindkey -v		    # Use VIM key bindings
+setopt AUTO_PUSHD	# Turn 'cd' into 'pushd'
+export GPGKEY=D7A65341
+export LC_CTYPE=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+export GIT_EDITOR=vi
+
+
+# Functions ---------------------------------------------------------------
+# Alt-S inserts 'sudo' at the start of line
+insert_sudo () { zle beginning-of-line; zle -U "sudo " }
+zle -N insert-sudo insert_sudo
+bindkey "^[s" insert-sudo
+
+# Show ... while somtehing tab completes
+expand-or-complete-with-dots() {
+  echo -n "\e[31m......\e[0m"
+  zle expand-or-complete
+  zle redisplay
+}
+zle -N expand-or-complete-with-dots
+bindkey "^I" expand-or-complete-with-dots
+
+# Online currency conversions
+xe() { wget -qO- "http://www.google.com/finance/converter?a=$1&from=$2&to=$3&hl=es" |	gsed '/res/!d;s/<[^>]*>//g'; }
+zle -N xe 
+
+
+# Aliases -----------------------------------------------------------------
+alias ls='ls -GF'
+alias lock="open /System/Library/Frameworks/ScreenSaver.framework/Versions/A/Resources/ScreenSaverEngine.app"
+alias t='python ~/Code/t/t.py --task-dir ~/Dropbox/Tasks --list tasks --delete-if-empty'
+alias ifconfig.me='curl ifconfig.me'
+alias cmus='cd ~/Music/songs && cmus && cd -'
+alias grep='grep 2>/dev/null -I --exclude *.tags --exclude-dir=.git'
+alias clea='clear'
+alias rls='ls'
+alias history='history 1'
+
+# Quick way to rebuild the Launch Services database and get rid
+# of duplicates in the Open With submenu.
+alias fixopenwith='/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -kill -r -domain local -domain system -domain user'
+
+
+# Options -----------------------------------------------------------------
+setopt RM_STAR_WAIT
+setopt INC_APPEND_HISTORY
+setopt HIST_IGNORE_ALL_DUPS
+setopt HIST_IGNORE_SPACE
+setopt HIST_REDUCE_BLANKS
+setopt HIST_VERIFY
+setopt no_nomatch # if there are no matches for globs, leave them alone and execute the command
+setopt no_cdable_vars # don't use named directories in cd autocompletion
+
+# The following lines were added by compinstall ---------------------------
+autoload -Uz compinit
+compinit
