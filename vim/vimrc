@@ -1,6 +1,53 @@
+set nocompatible				" Makes vim behave in a more useful way than vi-compatible mode
+
+" Initialize --------------------------------------------------------- {{{
+if !filereadable(expand('~/.vimrc'))
+  echo "Linking .vimrc..."
+  echo ""
+  silent !ln -s ~/.vim/vimrc ~/.vimrc
+endif
+
+if !filereadable(expand('~/.fonts/ubuntu-mono-powerline-ttf/README.md'))
+  echo "Fixing fonts..."
+  echo ""
+  silent !git clone https://github.com/pdf/ubuntu-mono-powerline-ttf.git ~/.fonts/ubuntu-mono-powerline-ttf
+endif
+" }}}
+
 " Plugins ------------------------------------------------------------ {{{
-" Pathogen plugin (to keep all other plugins in plugins/)
-execute pathogen#infect('plugins/{}')	
+" If vundle isn't installed, install it. If it is installed, update
+" it and activate the bundles
+let vundle_initialized=1
+let vundle_readme=expand('~/.vim/bundle/vundle/README.md')
+if !filereadable(vundle_readme)
+  echo "Installing Vundle..."
+  echo ""
+  silent !git clone https://github.com/gmarik/vundle ~/.vim/bundle/vundle
+  let vundle_initialized=0
+endif
+set rtp+=~/.vim/bundle/vundle
+call vundle#rc()
+Bundle 'gmarik/vundle'
+
+" Plugins here
+Bundle 'https://github.com/Lokaltog/vim-powerline.git'
+Bundle 'https://github.com/altercation/vim-colors-solarized.git'
+Bundle 'https://github.com/kien/ctrlp.vim.git'
+Bundle 'https://github.com/tpope/vim-pathogen.git'
+Bundle 'https://github.com/vim-scripts/taglist.vim.git'
+Bundle 'https://github.com/airblade/vim-gitgutter.git'
+Bundle 'https://github.com/tpope/vim-sleuth.git'
+Bundle 'https://github.com/Lokaltog/vim-easymotion.git'
+Bundle 'https://github.com/goldfeld/vim-seek.git'
+Bundle 'https://github.com/majutsushi/tagbar.git'
+Bundle 'https://github.com/steffanc/cscopemaps.vim'
+
+let g:vundle_default_git_proto='git'
+if vundle_initialized==0
+	echo "Installing Bundles..."
+	echo ""
+	:BundleInstall
+endif
 
 let g:Powerline_symbols = 'fancy'
 let g:EasyMotion_leader_key = '<Leader>'
@@ -9,11 +56,11 @@ let g:EasyMotion_leader_key = '<Leader>'
 
 " General Options --------------------------------------------------- {{{
 let mapleader=","				" Set <leader> to ,
-set number						" Show line numbers
+set number					" Show line numbers
 set showmatch					" Show matching braces
 set cursorline					" Highlight the current line
 set incsearch					" Incremental search
-set ic							" Ignore case when searching ... 
+set ic						" Ignore case when searching ... 
 set smartcase					" ... except explicit CAPS
 set hlsearch					" Highlight all search results
 set nocompatible				" Makes vim behave in a more useful way than vi-compatible mode
@@ -22,20 +69,53 @@ set shiftwidth=4				" Set autoindent tab size
 " set expandtab					" Insert spaces instead of tab character
 " set softtabstop=4				" Set soft tab to 4 characters
 syntax enable					" Enable syntax highlighting
-set bg=dark						" Set background to dark
-colorscheme solarized			" Use 'solarized' colorscheme
-set foldmethod=syntax			" Set the fold method to 'syntax'
+set bg=dark					" Set background to dark
+set foldmethod=syntax				" Set the fold method to 'syntax'
 set nofoldenable				" Start with no folding
 set foldlevel=255				" Set the fold level to the highest value
 set laststatus=2				" Always show statusline
-filetype plugin indent on		" Enable filetype detection, and load the plugin and indent files for that filetype
+filetype plugin indent on			" Enable filetype detection, and load the plugin and indent files for that filetype
+colorscheme solarized				" Use 'solarized' colorscheme
 
-" Tag file
-set tags=
+" CTags file
+set tags=./tags;/
+
+" Cscope file
+if has ("cscope")
+  " use both cscope and ctag for 'ctrl-]', ':ta', and 'vim -t'
+  set cscopetag
+
+  " check ctags for definition of a symbol before checking cscope: set to 0
+  " for reverse
+  set csto=1
+
+  if filereadable("cscope.out")
+    cs add cscope.out
+  endif
+
+  " The following maps all invoke one of the following cscope search types:
+  "
+  "   's'   symbol: find all references to the token under cursor
+  "   'g'   global: find global definition(s) of the token under cursor
+  "   'c'   calls:  find all calls to the function name under cursor
+  "   't'   text:   find all instances of the text under cursor
+  "   'e'   egrep:  egrep search for the word under cursor
+  "   'f'   file:   open the filename under cursor
+  "   'i'   includes: find files that include the filename under cursor
+  "   'd'   called: find functions that function under cursor calls
+  nmap <C-@>s :cs find s <C-R>=expand("<cword>")<CR><CR>	
+  nmap <C-@>g :cs find g <C-R>=expand("<cword>")<CR><CR>	
+  nmap <C-@>c :cs find c <C-R>=expand("<cword>")<CR><CR>	
+  nmap <C-@>t :cs find t <C-R>=expand("<cword>")<CR><CR>	
+  nmap <C-@>e :cs find e <C-R>=expand("<cword>")<CR><CR>	
+  nmap <C-@>f :cs find f <C-R>=expand("<cfile>")<CR><CR>	
+  nmap <C-@>i :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
+  nmap <C-@>d :cs find d <C-R>=expand("<cword>")<CR><CR>
+endif
 
 " Make sure 256 color terminal support is used
 if $TERM == "xterm-256color" || $TERM == "screen-256color" || $COLORTERM == "gnome-terminal"
-	set t_Co=256
+  set t_Co=256
 endif
 
 " Make any text wider than 80 char highlight in red
@@ -60,10 +140,10 @@ nnoremap \l :setlocal number!<CR>
 nnoremap \p :setlocal paste!<CR>
 
 " Code folding shortcuts
-nnoremap <space> zA			" Collapse current fold
-nnoremap [ zM				" Collapse entire file
-nnoremap ] zR				" Un-collapse entire file
-vnoremap <space> zf
+" nnoremap <space> zA			" Collapse current fold
+" nnoremap [ zM				" Collapse entire file
+" nnoremap ] zR				" Un-collapse entire file
+" vnoremap <space> zf
 
 " Change text encoding to Japanese Shift-JIS with Ctrl-J
 nnoremap <C-j> :setlocal encoding=sjis<CR>:setlocal fileencodings=cp932<CR>:e!<CR>
@@ -77,6 +157,9 @@ nnoremap <right> <nop>
 " Map key for TagList plugin (show functions)
 nnoremap ff :TlistOpen<CR>
 
+" Map key for DiffSaved function
+nnoremap shit :DiffSaved<CR>
+
 " Make j/k move one single row instead of one single line
 nnoremap j gj
 nnoremap k gk
@@ -84,6 +167,21 @@ nnoremap k gk
 " Keymappings for easy editing for vimrc file
 nnoremap <leader>ev :vsplit $MYVIMRC<CR>
 nnoremap <leader>sv :source $MYVIMRC<CR>
+
+" Map key for Tagbar plugin (show tags)
+nnoremap <silent> <leader>b :TagbarToggle<CR>
+" }}}
+
+
+" Functions --------------------------------------------------------- {{{
+function! s:DiffWithSaved()
+  let filetype=&ft
+  diffthis
+  vnew | r # | normal! 1Gdd
+  diffthis
+  exe "setlocal bt=nofile bh=wipe nobl noswf ro ft=" . filetype
+endfunction
+com! DiffSaved call s:DiffWithSaved()
 " }}}
 
 
