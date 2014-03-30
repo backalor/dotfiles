@@ -48,6 +48,37 @@ xe() {
 	wget -qO- "http://www.google.com/finance/converter?a=$1&from=$2&to=$3&hl=es" |	gsed '/res/!d;s/<[^>]*>//g';
 }
 
+##
+## Simple password management in ksh-compatible shell
+## You'll need a unix-like system and a working GPG configuration
+function pwgrep() {
+	gpg -q -d -r $GPGKEY $HOME/.auth/pwdb.asc | grep $*
+
+}
+
+function pwcat() {
+	gpg -q -d -r $GPGKEY $HOME/.auth/pwdb.asc
+
+}
+
+function pwinit() {
+	mkdir -p $HOME/.auth
+	if [ ! -f $HOME/.auth/pwdb.asc ] ; then
+		echo -n | gpg -q -a -e -r $GPGKEY > $HOME/.auth/pwdb.asc
+	fi
+}
+
+function pwedit() {
+	[ -z $EDITOR ] && EDITOR=vi
+	file=`mktemp /tmp/pwedit.XXXXXX`
+	gpg -q -d -r $GPGKEY $HOME/.auth/pwdb.asc > $file  && \
+		$EDITOR $file                                         && \
+		gpg -q -a -e -r $GPGKEY $file                && \
+		mv ${file}.asc $HOME/.auth/pwdb.asc
+	rm -f $file ${file}.asc
+
+}
+
 # Aliases -----------------------------------------------------------------
 if [[ $ostype == 'Darwin' ]]; then
 	alias ls='ls -GF'
