@@ -80,14 +80,14 @@ function pwedit() {
 }
 
 # Aliases -----------------------------------------------------------------
-if [[ $ostype == 'Darwin' ]]; then
+if [[ $OSTYPE == darwin* ]]; then
 	alias ls='ls -GF'
 	alias lock="open /System/Library/Frameworks/ScreenSaver.framework/Versions/A/Resources/ScreenSaverEngine.app"
 
 	# Quick way to rebuild the Launch Services database and get rid
 	# of duplicates in the Open With submenu.
 	alias fixopenwith='/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -kill -r -domain local -domain system -domain user'
-elif [[ $ostype == 'Linux' ]]; then
+elif [[ $OSTYPE == linux* ]]; then
 	alias ls='ls --color=auto'
 fi
 alias t='python ~/Code/t/t.py --task-dir ~/Dropbox/Tasks --list tasks --delete-if-empty'
