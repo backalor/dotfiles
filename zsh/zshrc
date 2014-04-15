@@ -57,7 +57,7 @@ typeset -U PATH					# Remove any duplicates from PATH
 unsetopt beep		# Don't beep
 bindkey -v		    # Use VIM key bindings
 setopt AUTO_PUSHD	# Turn 'cd' into 'pushd'
-export GPGKEY=D7A65341
+export GPGKEY=FFFFFF
 export LC_CTYPE=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
 export GIT_EDITOR=vi
