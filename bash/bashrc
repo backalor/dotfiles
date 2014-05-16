@@ -1,4 +1,63 @@
+# If not running interactively, don't do anything
+case $- in
+		*i*) ;;
+		  *) return;;
+esac
+
+
 # Functions ---------------------------------------------------------------
+cd_func ()
+{
+	local x2 the_new_dir adir index
+	local -i cnt
+
+	if [[ $1 ==  "--" ]]; then
+		dirs -v
+		return 0
+	fi
+
+	the_new_dir=$1
+	[[ -z $1 ]] && the_new_dir=$HOME
+
+	if [[ ${the_new_dir:0:1} == '-' ]]; then
+		#
+		# Extract dir N from dirs
+		index=${the_new_dir:1}
+		[[ -z $index ]] && index=1
+		adir=$(dirs +$index)
+		[[ -z $adir ]] && return 1
+		the_new_dir=$adir
+	fi
+
+	#
+	# '~' has to be substituted by ${HOME}
+	[[ ${the_new_dir:0:1} == '~' ]] && the_new_dir="${HOME}${the_new_dir:1}"
+
+	#
+	# Now change to the new dir and add to the top of the stack
+	pushd "${the_new_dir}" > /dev/null
+	[[ $? -ne 0 ]] && return 1
+	the_new_dir=$(pwd)
+
+	#
+	# Trim down everything beyond 11th entry
+	popd -n +11 2>/dev/null 1>/dev/null
+
+	#
+	# Remove any other occurence of this dir, skipping the top of the stack
+	for ((cnt=1; cnt <= 10; cnt++)); do
+		x2=$(dirs +${cnt} 2>/dev/null)
+		[[ $? -ne 0 ]] && return 0
+		[[ ${x2:0:1} == '~' ]] && x2="${HOME}${x2:1}"
+		if [[ "${x2}" == "${the_new_dir}" ]]; then
+			popd -n +$cnt 2>/dev/null 1>/dev/null
+			cnt=cnt-1
+		fi
+	done
+
+	return 0
+}
+
 working_directory() {
 	dir=`pwd`
 	in_home=0
@@ -7,7 +66,7 @@ working_directory() {
 		in_home=1
 	fi
 
-	if [[ `tput cols` -lt 110 ]]; then	# <-- Checking the term width
+	if [[ `tput cols` -lt 110 ]]; then		# <-- Checking the term width
 		first="/`echo $dir | cut -d / -f 2`"
 		letter=${first:0:2}
 		if [[ $in_home == 1 ]]; then
@@ -45,7 +104,11 @@ prompt() {
 }
 
 xe() {
-	wget -qO- "http://www.google.com/finance/converter?a=$1&from=$2&to=$3&hl=es" |	gsed '/res/!d;s/<[^>]*>//g';
+	if [[ $OSTYPE == 'Darwin' ]]; then
+		wget -qO- "http://www.google.com/finance/converter?a=$1&from=$2&to=$3&hl=es" |	gsed '/res/!d;s/<[^>]*>//g';
+	else
+		wget -qO- "http://www.google.com/finance/converter?a=$1&from=$2&to=$3&hl=es" |	sed '/res/!d;s/<[^>]*>//g';
+	fi
 }
 
 ##
@@ -53,12 +116,10 @@ xe() {
 ## You'll need a unix-like system and a working GPG configuration
 function pwgrep() {
 	gpg -q -d -r $GPGKEY $HOME/.auth/pwdb.asc | grep $*
-
 }
 
 function pwcat() {
 	gpg -q -d -r $GPGKEY $HOME/.auth/pwdb.asc
-
 }
 
 function pwinit() {
@@ -71,24 +132,24 @@ function pwinit() {
 function pwedit() {
 	[ -z $EDITOR ] && EDITOR=vi
 	file=`mktemp /tmp/pwedit.XXXXXX`
-	gpg -q -d -r $GPGKEY $HOME/.auth/pwdb.asc > $file  && \
-		$EDITOR $file                                         && \
-		gpg -q -a -e -r $GPGKEY $file                && \
-		mv ${file}.asc $HOME/.auth/pwdb.asc
+	gpg -q -d -r $GPGKEY $HOME/.auth/pwdb.asc > $file	&& \
+			$EDITOR $file								&& \
+			gpg -q -a -e -r $GPGKEY $file				&& \
+			mv ${file}.asc $HOME/.auth/pwdb.asc
 	rm -f $file ${file}.asc
-
 }
 
+
 # Aliases -----------------------------------------------------------------
-if [[ $ostype == 'Darwin' ]]; then
+if [[ $OSTYPE == 'Darwin' ]]; then
 	alias ls='ls -GF'
 	alias lock="open /System/Library/Frameworks/ScreenSaver.framework/Versions/A/Resources/ScreenSaverEngine.app"
 
 	# Quick way to rebuild the Launch Services database and get rid
 	# of duplicates in the Open With submenu.
 	alias fixopenwith='/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -kill -r -domain local -domain system -domain user'
-elif [[ $ostype == 'Linux' ]]; then
-	alias ls='ls --color=auto'
+elif [[ $OSTYPE == 'Linux' ]] || [[ $OSTYPE == 'linux-gnu' ]]; then
+	alias ls='ls --color=auto -F'
 fi
 alias t='python ~/Code/t/t.py --task-dir ~/Dropbox/Tasks --list tasks --delete-if-empty'
 alias ifconfig.me='curl ifconfig.me'
@@ -96,6 +157,10 @@ alias cmus='cd ~/Music/songs && cmus && cd -'
 alias grep='grep 2>/dev/null -I --exclude=tags --exclude-dir=.git --exclude-dir=.svn -n'
 alias clea='clear'
 alias rls='ls'
+alias df='df -h'
+alias du='du -h'
+alias vi='vim'
+alias cd=cd_func
 
 
 # Variables ---------------------------------------------------------------
@@ -107,6 +172,8 @@ export LC_CTYPE=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
 export GIT_EDITOR=vi
 export TERM="xterm-256color"
+export HISTIGNORE=$'[ \t]*:&:[fb]g:exit:ls'
+export HISTCONTROL=$HISTCONTROL${HISTCONTROL+,}ignoreboth
 
 
 # Settings ----------------------------------------------------------------
@@ -114,3 +181,10 @@ set meta-flag on
 set input-meta on
 set output-meta on
 set convert-meta off
+
+
+# Options -----------------------------------------------------------------
+shopt -s histappend				# Append rather than overwrite the history on disk
+shopt -s cdspell				# Ignore small typos when changing directory
+shopt -s nocaseglob				# Case-insensitive filename globbing
+shopt -s checkwinsize			# Update LINES and COLUMNS based on window size
