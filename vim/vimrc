@@ -41,6 +41,8 @@ Bundle 'https://github.com/Lokaltog/vim-easymotion.git'
 Bundle 'https://github.com/goldfeld/vim-seek.git'
 Bundle 'https://github.com/majutsushi/tagbar.git'
 Bundle 'https://github.com/steffanc/cscopemaps.vim'
+Bundle 'https://github.com/scrooloose/nerdtree.git'
+Bundle 'https://github.com/kshenoy/vim-signature'
 
 let g:vundle_default_git_proto='git'
 if vundle_initialized==0
@@ -77,7 +79,7 @@ set laststatus=2				" Always show statusline
 filetype plugin indent on			" Enable filetype detection, and load the plugin and indent files for that filetype
 colorscheme solarized				" Use 'solarized' colorscheme
 
-" CTags file
+" Ctags file
 set tags=./tags;/
 
 " Cscope file
@@ -140,10 +142,10 @@ nnoremap \l :setlocal number!<CR>
 nnoremap \p :setlocal paste!<CR>
 
 " Code folding shortcuts
-" nnoremap <space> zA			" Collapse current fold
+nnoremap <space> zA			" Collapse current fold
 " nnoremap [ zM				" Collapse entire file
 " nnoremap ] zR				" Un-collapse entire file
-" vnoremap <space> zf
+vnoremap <space> zf
 
 " Change text encoding to Japanese Shift-JIS with Ctrl-J
 nnoremap <C-j> :setlocal encoding=sjis<CR>:setlocal fileencodings=cp932<CR>:e!<CR>
@@ -160,6 +162,9 @@ nnoremap ff :TlistOpen<CR>
 " Map key for DiffSaved function
 nnoremap shit :DiffSaved<CR>
 
+" Map key/command for BundleUpdate function (update plugins)
+nnoremap update :BundleUpdate<CR>
+
 " Make j/k move one single row instead of one single line
 nnoremap j gj
 nnoremap k gk
@@ -170,6 +175,12 @@ nnoremap <leader>sv :source $MYVIMRC<CR>
 
 " Map key for Tagbar plugin (show tags)
 nnoremap <silent> <leader>b :TagbarToggle<CR>
+
+" Map key for NERDTree plugin 
+nnoremap <silent> <leader>f :NERDTreeToggle<CR>
+
+" Vertical split for tags
+nnoremap <leader>vs :vsp <CR>:exec("tag ".expand("<cword>"))<CR>
 " }}}
 
 
