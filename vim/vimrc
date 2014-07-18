@@ -53,6 +53,10 @@ endif
 
 let g:Powerline_symbols = 'fancy'
 let g:EasyMotion_leader_key = '<Leader>'
+
+" Make solarized work nicely over SSH(!)
+let g:solarized_termcolors=256
+let g:solarized_termtrans=1
 " }}}
 
 
