@@ -111,6 +111,10 @@ xe() {
 	fi
 }
 
+stock() {
+	curl -s "http://download.finance.yahoo.com/d/quotes.csv?s=$1&f=l1"
+}
+
 ##
 ## Simple password management in ksh-compatible shell
 ## You'll need a unix-like system and a working GPG configuration
