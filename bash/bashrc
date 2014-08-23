@@ -140,7 +140,7 @@ function pwedit() {
 			$EDITOR $file								&& \
 			gpg -q -a -e -r $GPGKEY $file				&& \
 			mv ${file}.asc $HOME/.auth/pwdb.asc
-	rm -f $file ${file}.asc
+	srm -f $file ${file}.asc
 }
 
 
