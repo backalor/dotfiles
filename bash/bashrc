@@ -103,6 +103,25 @@ prompt() {
 	PS1=$prompt$exit_status
 }
 
+cgrep() {
+	if [[ $# >1 ]]
+	then
+		find $2 $3 $4 -regex '.*\.[c,h,cc,cpp]' -exec grep $1 {} --color=auto -Hn \;
+	else
+		find . -regex '.*\.[c,h,cc,cpp]' -exec grep $1 {} --color=auto -Hn \;
+	fi
+}
+
+cgrepi() {
+	if [[ $# >1 ]]
+	then
+		find $2 $3 $4 -regex '.*\.[c,h,cc,cpp]' -exec grep $1 {} --color=auto -Hin \;
+	else
+		find . -regex '.*\.[c,h,cc,cpp]' -exec grep $1 {} --color=auto -Hin \;
+	fi
+}
+
+
 xe() {
 	if [[ $OSTYPE == darwin* ]]; then
 		wget -qO- "http://www.google.com/finance/converter?a=$1&from=$2&to=$3&hl=es" |	gsed '/res/!d;s/<[^>]*>//g';
