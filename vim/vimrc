@@ -42,7 +42,10 @@ Bundle 'https://github.com/goldfeld/vim-seek.git'
 Bundle 'https://github.com/majutsushi/tagbar.git'
 Bundle 'https://github.com/steffanc/cscopemaps.vim'
 Bundle 'https://github.com/scrooloose/nerdtree.git'
+Bundle 'https://github.com/vim-scripts/Mark--Karkat'
 Bundle 'https://github.com/kshenoy/vim-signature'
+Bundle 'https://github.com/nathanaelkane/vim-indent-guides'
+Bundle 'https://github.com/vim-scripts/autoload_cscope.vim'
 
 let g:vundle_default_git_proto='git'
 if vundle_initialized==0
@@ -53,10 +56,13 @@ endif
 
 let g:Powerline_symbols = 'fancy'
 let g:EasyMotion_leader_key = '<Leader>'
+let g:indent_guides_enable_on_vim_startup = 1
 
 " Make solarized work nicely over SSH(!)
 let g:solarized_termcolors=256
 let g:solarized_termtrans=1
+" Don't use the plugin's keymapping for cscope
+let g:autocscope_menus=0
 " }}}
 
 
@@ -86,20 +92,31 @@ colorscheme solarized				" Use 'solarized' colorscheme
 " Ctags file
 set tags=./tags;/
 
-" Cscope file
+" Make sure 256 color terminal support is used
+if $TERM == "xterm-256color" || $TERM == "screen-256color" || $COLORTERM == "gnome-terminal"
+	set t_Co=256
+endif
+
+" Make any text wider than 100 char highlight in red
+"highlight OverLength ctermbg=red ctermfg=white guibg=#592929
+"match OverLength /\%101v.\+/
+
+" Cscope
 if has ("cscope")
   " use both cscope and ctag for 'ctrl-]', ':ta', and 'vim -t'
   set cscopetag
 
   " check ctags for definition of a symbol before checking cscope: set to 0
   " for reverse
-  set csto=1
+  set csto=0
 
+  " add any cscope database in current directory
   if filereadable("cscope.out")
     cs add cscope.out
   endif
 
   " The following maps all invoke one of the following cscope search types:
+  " (note: <C-@> = <C-Space> = Ctrl+Space
   "
   "   's'   symbol: find all references to the token under cursor
   "   'g'   global: find global definition(s) of the token under cursor
@@ -117,11 +134,15 @@ if has ("cscope")
   nmap <C-@>f :cs find f <C-R>=expand("<cfile>")<CR><CR>	
   nmap <C-@>i :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
   nmap <C-@>d :cs find d <C-R>=expand("<cword>")<CR><CR>
-endif
 
-" Make sure 256 color terminal support is used
-if $TERM == "xterm-256color" || $TERM == "screen-256color" || $COLORTERM == "gnome-terminal"
-  set t_Co=256
+  " Ctrl+space+space will open cscope results in vertically split window
+  nmap <C-@><C-@>s :vert scs find s <C-R>=expand("<cword>")<CR><CR>
+  nmap <C-@><C-@>g :vert scs find g <C-R>=expand("<cword>")<CR><CR>
+  nmap <C-@><C-@>c :vert scs find c <C-R>=expand("<cword>")<CR><CR>
+  nmap <C-@><C-@>t :vert scs find t <C-R>=expand("<cword>")<CR><CR>
+  nmap <C-@><C-@>e :vert scs find e <C-R>=expand("<cword>")<CR><CR>
+  nmap <C-@><C-@>i :vert scs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
+  nmap <C-@><C-@>d :vert scs find d <C-R>=expand("<cword>")<CR><CR>
 endif
 
 " Make any text wider than 80 char highlight in red
@@ -146,7 +167,7 @@ nnoremap \l :setlocal number!<CR>
 nnoremap \p :setlocal paste!<CR>
 
 " Code folding shortcuts
-nnoremap <space> zA			" Collapse current fold
+nnoremap <space> za			" Collapse current fold
 " nnoremap [ zM				" Collapse entire file
 " nnoremap ] zR				" Un-collapse entire file
 vnoremap <space> zf
