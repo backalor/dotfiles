@@ -6,7 +6,7 @@ esac
 
 
 # Functions ---------------------------------------------------------------
-cd_func ()
+function cd_func ()
 {
 	local x2 the_new_dir adir index
 	local -i cnt
@@ -58,7 +58,7 @@ cd_func ()
 	return 0
 }
 
-working_directory() {
+function working_directory() {
 	dir=`pwd`
 	in_home=0
 	if [[ `pwd` =~ ^$HOME($|\/) ]]; then
@@ -92,18 +92,18 @@ working_directory() {
 	fi
 }
 
-prompt() {
+function prompt() {
 	if [[ $? -eq 0 ]]; then
 		exit_status='\[\e[0;34m\]› \[\e[00m\]'
 	else
 		exit_status='\[\e[0;31m\]› \[\e[00m\]'
 	fi
 
-	prompt='\[\e[0;32m\][\#]\[\e[00m\]\[\e[1;31m\][\u\e[0;37m\]@\h\e[1;31m\]]\[\e[00m\]\[\e[0;33m\]$(working_directory)\[\e[00m\]'
+	prompt='\[\e[0;32m\][\#]\[\e[00m\]\[\e[1;31m\][\u\[\e[0;37m\]@\h\[\e[1;31m\]]\[\e[00m\]\[\e[0;33m\]$(working_directory)\[\e[00m\]'
 	PS1=$prompt$exit_status
 }
 
-cgrep() {
+function cgrep() {
 	if [[ $# >1 ]]
 	then
 		find $2 $3 $4 -regex '.*\.[c,h,cc,cpp]' -exec grep $1 {} --color=auto -Hn \;
@@ -112,7 +112,7 @@ cgrep() {
 	fi
 }
 
-cgrepi() {
+function cgrepi() {
 	if [[ $# >1 ]]
 	then
 		find $2 $3 $4 -regex '.*\.[c,h,cc,cpp]' -exec grep $1 {} --color=auto -Hin \;
@@ -121,8 +121,23 @@ cgrepi() {
 	fi
 }
 
+function filegrep() {
+	if [[ $# > 1 ]]
+	then
+		find . -name "$1" -exec grep -nIH --color=auto $2 {} \;
+	else
+		echo "Usage: filegrep <files> <search-term>"
+	fi
+}
 
-xe() {
+function patchdiff() {
+	cp $1 tmp.XXX && \
+		patch $1 $2 && \
+		vimdiff tmp.XXX $1 && \
+		mv tmp.XXX $1
+}
+
+function xe() {
 	if [[ $OSTYPE == darwin* ]]; then
 		wget -qO- "http://www.google.com/finance/converter?a=$1&from=$2&to=$3&hl=es" |	gsed '/res/!d;s/<[^>]*>//g';
 	else
@@ -130,7 +145,7 @@ xe() {
 	fi
 }
 
-stock() {
+function stock() {
 	curl -s "http://download.finance.yahoo.com/d/quotes.csv?s=$1&f=l1"
 }
 
