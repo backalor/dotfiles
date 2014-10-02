@@ -82,9 +82,9 @@ set shiftwidth=4				" Set autoindent tab size
 " set softtabstop=4				" Set soft tab to 4 characters
 syntax enable					" Enable syntax highlighting
 set bg=dark					" Set background to dark
-set foldmethod=syntax				" Set the fold method to 'syntax'
-set nofoldenable				" Start with no folding
-set foldlevel=255				" Set the fold level to the highest value
+"set foldmethod=syntax				" Set the fold method to 'syntax'
+"set nofoldenable				" Start with no folding
+"set foldlevel=255				" Set the fold level to the highest value
 set laststatus=2				" Always show statusline
 filetype plugin indent on			" Enable filetype detection, and load the plugin and indent files for that filetype
 colorscheme solarized				" Use 'solarized' colorscheme
