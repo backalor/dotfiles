@@ -192,7 +192,7 @@ fi
 alias t='python ~/Code/t/t.py --task-dir ~/Dropbox/Tasks --list tasks --delete-if-empty'
 alias ifconfig.me='curl ifconfig.me'
 alias cmus='cd ~/Music/songs && cmus && cd -'
-alias grep='grep 2>/dev/null -I --exclude=tags --exclude-dir=.git --exclude-dir=.svn -n --color=auto'
+alias grep='grep 2>/dev/null -I --exclude=tags --exclude=cscope* --exclude-dir=.git --exclude-dir=.svn -n --color=auto'
 alias clea='clear'
 alias less='less -R'
 alias rls='ls'
