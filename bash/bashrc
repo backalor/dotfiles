@@ -178,6 +178,11 @@ function pwedit() {
 }
 
 
+# Enable color support of ls
+if [ -x /usr/bin/dircolors ]; then
+	test -r ~/.dir_colors && eval "$(dircolors -b ~/.dir_colors)" || eval "$(dircolors -b)"
+fi
+
 # Aliases -----------------------------------------------------------------
 if [[ $OSTYPE == darwin* ]]; then
 	alias ls='ls -GF'
