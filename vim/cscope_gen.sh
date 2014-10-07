@@ -1,5 +1,6 @@
 #!/bin/sh
-find . -name '*.py' \
+
+find $PWD -name '*.py' \
 -o -name '*.java' \
 -o -iname '*.[CH]' \
 -o -name '*.cpp' \
@@ -7,9 +8,10 @@ find . -name '*.py' \
 -o -name '*.hpp'  \
 > cscope.files
 
-# -b: just build
+# -b: just build the cross-reference only
 # -q: create inverted index
 # -R: recursive
+# -i: include only these files
 cscope -b -q -R -i cscope.files
 
 rm cscope.files
