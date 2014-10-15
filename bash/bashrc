@@ -212,7 +212,7 @@ export LC_ALL=en_US.UTF-8
 export GIT_EDITOR=vi
 export EDITOR=vi
 export TERM="xterm-256color"
-export HISTIGNORE=$'[ \t]*:&:[fb]g:exit:ls'
+export HISTIGNORE=$'[ \t]*:&:[fb]g:exit:ls:pwgrep*:pwedit*:pwcat*'
 export HISTCONTROL=$HISTCONTROL${HISTCONTROL+,}ignoreboth
 
 
