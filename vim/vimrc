@@ -112,7 +112,31 @@ if has ("cscope")
 
   " add any cscope database in current directory
   if filereadable("cscope.out")
-    cs add cscope.out
+      cs add cscope.out
+      " else search up a few directories
+  elseif filereadable("../cscope.out")
+      cs add ../cscope.out
+  elseif filereadable("../../cscope.out")
+      cs add ../../cscope.out
+  elseif filereadable("../../../cscope.out")
+      cs add ../../../cscope.out
+  elseif filereadable("../../../../cscope.out")
+      cs add ../../../../cscope.out
+  elseif filereadable("../../../../../cscope.out")
+      cs add ../../../../../cscope.out
+  elseif filereadable("../../../../../../cscope.out")
+      cs add ../../../../../../cscope.out
+  elseif filereadable("../../../../../../../cscope.out")
+      cs add ../../../../../../../cscope.out
+  elseif filereadable("../../../../../../../../cscope.out")
+      cs add ../../../../../../../../cscope.out
+  elseif filereadable("../../../../../../../../../cscope.out")
+      cs add ../../../../../../../../../cscope.out
+  elseif filereadable("../../../../../../../../../../cscope.out")
+      cs add ../../../../../../../../../../cscope.out
+      " else add database pointed to by environment
+  elseif $CSCOPE_DB != ""
+      cs add $CSCOPE_DB
   endif
 
   " The following maps all invoke one of the following cscope search types:
