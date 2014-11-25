@@ -94,9 +94,17 @@ function working_directory() {
 
 function prompt() {
 	if [[ $? -eq 0 ]]; then
-		exit_status='\[\e[0;34m\]› \[\e[00m\]'
+		if [[ "$EUID" -ne 0 ]]; then
+			exit_status='\[\e[0;34m\]› \[\e[00m\]'
+		else
+			exit_status='\[\e[0;34m\]# \[\e[00m\]'
+		fi
 	else
-		exit_status='\[\e[0;31m\]› \[\e[00m\]'
+		if [[ "$EUID" -ne 0 ]]; then
+			exit_status='\[\e[0;31m\]› \[\e[00m\]'
+		else
+			exit_status='\[\e[0;31m\]# \[\e[00m\]'
+		fi
 	fi
 
 	prompt='\[\e[0;32m\][\#]\[\e[00m\]\[\e[1;31m\][\u\[\e[0;37m\]@\h\[\e[1;31m\]]\[\e[00m\]\[\e[0;33m\]$(working_directory)\[\e[00m\]'
