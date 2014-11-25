@@ -106,35 +106,35 @@ function prompt() {
 function cgrep() {
 	if [[ $# >1 ]]
 	then
-		find $2 $3 $4 -regex '.*\.[c,h,cc,cpp]' -exec grep $1 {} --color=auto -Hn \;
+		find $2 $3 $4 -regex '.*\.[c,h,cc,cpp]' -exec grep "$1" {} --color=auto -Hn \;
 	else
-		find . -regex '.*\.[c,h,cc,cpp]' -exec grep $1 {} --color=auto -Hn \;
+		find . -regex '.*\.[c,h,cc,cpp]' -exec grep "$1" {} --color=auto -Hn \;
 	fi
 }
 
 function cgrepi() {
 	if [[ $# >1 ]]
 	then
-		find $2 $3 $4 -regex '.*\.[c,h,cc,cpp]' -exec grep $1 {} --color=auto -Hin \;
+		find $2 $3 $4 -regex '.*\.[c,h,cc,cpp]' -exec grep "$1" {} --color=auto -Hin \;
 	else
-		find . -regex '.*\.[c,h,cc,cpp]' -exec grep $1 {} --color=auto -Hin \;
+		find . -regex '.*\.[c,h,cc,cpp]' -exec grep "$1" {} --color=auto -Hin \;
 	fi
 }
 
 function filegrep() {
 	if [[ $# > 1 ]]
 	then
-		find . -name "$1" -exec grep -nIH --color=auto $2 {} \;
+		find . -name "$1" -exec grep -nIH --color=auto "$2" {} \;
 	else
 		echo "Usage: filegrep <files> <search-term>"
 	fi
 }
 
 function patchdiff() {
-	cp $1 tmp.XXX && \
-		patch $1 $2 && \
-		vimdiff tmp.XXX $1 && \
-		mv tmp.XXX $1
+	cp "$1" tmp.XXX && \
+		patch "$1" "$2" && \
+		vimdiff tmp.XXX "$1" && \
+		mv tmp.XXX "$1"
 }
 
 function xe() {
@@ -198,6 +198,7 @@ alias t='python ~/Code/t/t.py --task-dir ~/Dropbox/Tasks --list tasks --delete-i
 alias ifconfig.me='curl ifconfig.me'
 alias cmus='cd ~/Music/songs && cmus && cd -'
 alias grep='grep 2>/dev/null -I --exclude=tags --exclude=cscope* --exclude-dir=.git --exclude-dir=.svn -n --color=auto'
+alias branches='git log --all --graph --decorate --oneline --simplify-by-decoration'
 alias clea='clear'
 alias less='less -R'
 alias rls='ls'
@@ -232,4 +233,4 @@ set convert-meta off
 shopt -s histappend				# Append rather than overwrite the history on disk
 shopt -s cdspell				# Ignore small typos when changing directory
 shopt -s nocaseglob				# Case-insensitive filename globbing
-shopt -s checkwinsize			# Update LINES and COLUMNS based on window size
+shopt -s checkwinsize				# Update LINES and COLUMNS based on window size
