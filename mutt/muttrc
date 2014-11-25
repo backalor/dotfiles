@@ -26,7 +26,7 @@ set forward_quote		= yes					# Include message in fowards
 
 # Use msmtp to send outgoing mail
 set sendmail			= "/usr/local/bin/msmtp -a backalor"
-set sendmail_wait		= -1
+set sendmail_wait		= 0
 
 # Set the editor to vi
 set editor				= "vim +/^$ ++1 -c 'set filetype=mail textwidth=0 noautoindent'"

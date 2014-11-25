@@ -30,7 +30,7 @@ call vundle#rc()
 Bundle 'gmarik/vundle'
 
 " Plugins here
-Bundle 'https://github.com/Lokaltog/vim-powerline.git'
+Bundle 'https://github.com/bling/vim-airline'
 Bundle 'https://github.com/altercation/vim-colors-solarized.git'
 Bundle 'https://github.com/kien/ctrlp.vim.git'
 Bundle 'https://github.com/tpope/vim-pathogen.git'
@@ -46,6 +46,7 @@ Bundle 'https://github.com/vim-scripts/Mark--Karkat'
 Bundle 'https://github.com/kshenoy/vim-signature'
 Bundle 'https://github.com/nathanaelkane/vim-indent-guides'
 Bundle 'https://github.com/vim-scripts/autoload_cscope.vim'
+Bundle 'https://github.com/jamessan/vim-gnupg'
 
 let g:vundle_default_git_proto='git'
 if vundle_initialized==0
@@ -54,15 +55,26 @@ if vundle_initialized==0
 	:BundleInstall
 endif
 
-let g:Powerline_symbols = 'fancy'
+let g:airline#extensions#tabline#enabled = 1
+let g:airline_powerline_fonts = 1
 let g:EasyMotion_leader_key = '<Leader>'
 let g:indent_guides_enable_on_vim_startup = 1
 
 " Make solarized work nicely over SSH(!)
 let g:solarized_termcolors=256
 let g:solarized_termtrans=1
+
 " Don't use the plugin's keymapping for cscope
 let g:autocscope_menus=0
+
+" Setup Ctrl-P
+let g:ctrlp_custom_ignore = {
+  \ 'dir':  '\v[\/](\.(git|hg|svn)|\_site)$',
+  \ 'file': '\v\.(exe|so|dll|class|png|jpg|jpeg)$',
+\}
+
+" Use the nearest {.git|.svn|.hg} directory as the cwd
+let g:ctrlp_working_path_mode = 'r'
 " }}}
 
 
@@ -106,8 +118,8 @@ if has ("cscope")
   " use both cscope and ctag for 'ctrl-]', ':ta', and 'vim -t'
   set cscopetag
 
-  " check ctags for definition of a symbol before checking cscope: set to 0
-  " for reverse
+  " 1 = check ctags for definition of a symbol before checking cscope
+  " 0 = reverse
   set csto=0
 
   " add any cscope database in current directory
