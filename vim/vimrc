@@ -74,7 +74,7 @@ let g:ctrlp_custom_ignore = {
 \}
 
 " Use the nearest {.git|.svn|.hg} directory as the cwd
-let g:ctrlp_working_path_mode = 'r'
+let g:ctrlp_working_path_mode = 'ra'
 " }}}
 
 
@@ -88,8 +88,9 @@ set ic						" Ignore case when searching ...
 set smartcase					" ... except explicit CAPS
 set hlsearch					" Highlight all search results
 set nocompatible				" Makes vim behave in a more useful way than vi-compatible mode
-set tabstop=4					" Set tab size to 4 characters
-set shiftwidth=4				" Set autoindent tab size
+set tabstop=4					" Set tab size
+set shiftwidth=4				" Set indention size
+set cindent					" Set strict indention rules for C
 " set expandtab					" Insert spaces instead of tab character
 " set softtabstop=4				" Set soft tab to 4 characters
 syntax enable					" Enable syntax highlighting
