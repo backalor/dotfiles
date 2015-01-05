@@ -2,15 +2,15 @@ set nocompatible				" Makes vim behave in a more useful way than vi-compatible m
 
 " Initialize --------------------------------------------------------- {{{
 if !filereadable(expand('~/.vimrc'))
-  echo "Linking .vimrc..."
-  echo ""
-  silent !ln -s ~/.vim/vimrc ~/.vimrc
+	echo "Linking .vimrc..."
+	echo ""
+	silent !ln -s ~/.vim/vimrc ~/.vimrc
 endif
 
 if !filereadable(expand('~/.fonts/ubuntu-mono-powerline-ttf/README.md'))
-  echo "Fixing fonts..."
-  echo ""
-  silent !git clone https://github.com/pdf/ubuntu-mono-powerline-ttf.git ~/.fonts/ubuntu-mono-powerline-ttf
+	echo "Fixing fonts..."
+	echo ""
+	silent !git clone https://github.com/pdf/ubuntu-mono-powerline-ttf.git ~/.fonts/ubuntu-mono-powerline-ttf
 endif
 " }}}
 
@@ -20,10 +20,10 @@ endif
 let vundle_initialized=1
 let vundle_readme=expand('~/.vim/bundle/vundle/README.md')
 if !filereadable(vundle_readme)
-  echo "Installing Vundle..."
-  echo ""
-  silent !git clone https://github.com/gmarik/vundle ~/.vim/bundle/vundle
-  let vundle_initialized=0
+	echo "Installing Vundle..."
+	echo ""
+	silent !git clone https://github.com/gmarik/vundle ~/.vim/bundle/vundle
+	let vundle_initialized=0
 endif
 set rtp+=~/.vim/bundle/vundle
 call vundle#rc()
@@ -34,7 +34,6 @@ Bundle 'itchyny/lightline.vim'
 Bundle 'https://github.com/altercation/vim-colors-solarized.git'
 Bundle 'https://github.com/vim-scripts/taglist.vim.git'
 Bundle 'https://github.com/airblade/vim-gitgutter.git'
-" Bundle 'https://github.com/tpope/vim-sleuth.git'
 Bundle 'https://github.com/ciaranm/detectindent'
 Bundle 'https://github.com/Lokaltog/vim-easymotion.git'
 Bundle 'https://github.com/majutsushi/tagbar.git'
@@ -62,19 +61,19 @@ let g:solarized_termtrans=1
 let g:autocscope_menus=0
 
 let g:lightline = {
-  \ 'active': {
-  \   'left': [ [ 'mode', 'paste' ], [ 'filename' ] ],
-  \   'right': [ ['percent'], [ 'fileformat', 'fileencoding', 'filetype' ], ['funcname'] ]
-  \ },
-  \ 'component_function': {
-  \   'filename': 'MyFilename',
-  \   'fileformat': 'MyFileformat',
-  \   'filetype': 'MyFiletype',
-  \   'fileencoding': 'MyFileencoding',
-  \   'mode': 'MyMode',
-  \   'funcname': 'MyFuncName',
-  \ }
-  \ }
+	\ 'active': {
+	\   'left': [ [ 'mode', 'paste' ], [ 'filename' ] ],
+	\   'right': [ ['percent'], [ 'fileformat', 'fileencoding', 'filetype' ], ['funcname'] ]
+	\ },
+	\ 'component_function': {
+	\   'filename': 'MyFilename',
+	\   'fileformat': 'MyFileformat',
+	\   'filetype': 'MyFiletype',
+	\   'fileencoding': 'MyFileencoding',
+	\   'mode': 'MyMode',
+	\   'funcname': 'MyFuncName',
+	\ }
+	\ }
 " }}}
 
 
@@ -116,71 +115,41 @@ endif
 
 " Cscope
 if has ("cscope")
-  " use both cscope and ctag for 'ctrl-]', ':ta', and 'vim -t'
-  set cscopetag
+	" use both cscope and ctag for 'ctrl-]', ':ta', and 'vim -t'
+	set cscopetag
 
-  " 1 = check ctags for definition of a symbol before checking cscope
-  " 0 = reverse
-  set csto=0
+	" 1 = check ctags for definition of a symbol before checking cscope
+	" 0 = reverse
+	set csto=0
 
-" This *should* be done by autoload_cscope.vim plugin
-"  " add any cscope database in current directory
-"  if filereadable("cscope.out")
-"      cs add cscope.out
-"      " else search up a few directories
-"  elseif filereadable("../cscope.out")
-"      cs add ../cscope.out
-"  elseif filereadable("../../cscope.out")
-"      cs add ../../cscope.out
-"  elseif filereadable("../../../cscope.out")
-"      cs add ../../../cscope.out
-"  elseif filereadable("../../../../cscope.out")
-"      cs add ../../../../cscope.out
-"  elseif filereadable("../../../../../cscope.out")
-"      cs add ../../../../../cscope.out
-"  elseif filereadable("../../../../../../cscope.out")
-"      cs add ../../../../../../cscope.out
-"  elseif filereadable("../../../../../../../cscope.out")
-"      cs add ../../../../../../../cscope.out
-"  elseif filereadable("../../../../../../../../cscope.out")
-"      cs add ../../../../../../../../cscope.out
-"  elseif filereadable("../../../../../../../../../cscope.out")
-"      cs add ../../../../../../../../../cscope.out
-"  elseif filereadable("../../../../../../../../../../cscope.out")
-"      cs add ../../../../../../../../../../cscope.out
-"      " else add database pointed to by environment
-"  elseif $CSCOPE_DB != ""
-"      cs add $CSCOPE_DB
-"  endif
+	" The following maps all invoke one of the following cscope search types:
+	" (note: <C-@> = <C-Space> = Ctrl+Space
+	"
+	"   's'   symbol: find all references to the token under cursor
+	"   'g'   global: find global definition(s) of the token under cursor
+	"   'c'   calls:  find all calls to the function name under cursor
+	"   't'   text:   find all instances of the text under cursor
+	"   'e'   egrep:  egrep search for the word under cursor
+	"   'f'   file:   open the filename under cursor
+	"   'i'   includes: find files that include the filename under cursor
+	"   'd'   called: find functions that function under cursor calls
+	nmap <C-@>s :cs find s <C-R>=expand("<cword>")<CR><CR>	
+	nmap <C-@>g :cs find g <C-R>=expand("<cword>")<CR><CR>	
+	nmap <C-@>c :cs find c <C-R>=expand("<cword>")<CR><CR>	
+	nmap <C-@>t :cs find t <C-R>=expand("<cword>")<CR><CR>	
+	nmap <C-@>e :cs find e <C-R>=expand("<cword>")<CR><CR>	
+	nmap <C-@>f :cs find f <C-R>=expand("<cfile>")<CR><CR>	
+	nmap <C-@>i :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
+	nmap <C-@>d :cs find d <C-R>=expand("<cword>")<CR><CR>
 
-  " The following maps all invoke one of the following cscope search types:
-  " (note: <C-@> = <C-Space> = Ctrl+Space
-  "
-  "   's'   symbol: find all references to the token under cursor
-  "   'g'   global: find global definition(s) of the token under cursor
-  "   'c'   calls:  find all calls to the function name under cursor
-  "   't'   text:   find all instances of the text under cursor
-  "   'e'   egrep:  egrep search for the word under cursor
-  "   'f'   file:   open the filename under cursor
-  "   'i'   includes: find files that include the filename under cursor
-  "   'd'   called: find functions that function under cursor calls
-  nmap <C-@>s :cs find s <C-R>=expand("<cword>")<CR><CR>	
-  nmap <C-@>g :cs find g <C-R>=expand("<cword>")<CR><CR>	
-  nmap <C-@>c :cs find c <C-R>=expand("<cword>")<CR><CR>	
-  nmap <C-@>t :cs find t <C-R>=expand("<cword>")<CR><CR>	
-  nmap <C-@>e :cs find e <C-R>=expand("<cword>")<CR><CR>	
-  nmap <C-@>f :cs find f <C-R>=expand("<cfile>")<CR><CR>	
-  nmap <C-@>i :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
-  nmap <C-@>d :cs find d <C-R>=expand("<cword>")<CR><CR>
-
-  " Ctrl+space+space will open cscope results in vertically split window
-  nmap <C-@><C-@>s :vert scs find s <C-R>=expand("<cword>")<CR><CR>
-  nmap <C-@><C-@>g :vert scs find g <C-R>=expand("<cword>")<CR><CR>
-  nmap <C-@><C-@>c :vert scs find c <C-R>=expand("<cword>")<CR><CR>
-  nmap <C-@><C-@>t :vert scs find t <C-R>=expand("<cword>")<CR><CR>
-  nmap <C-@><C-@>e :vert scs find e <C-R>=expand("<cword>")<CR><CR>
-  nmap <C-@><C-@>i :vert scs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
-  nmap <C-@><C-@>d :vert scs find d <C-R>=expand("<cword>")<CR><CR>
+	" Ctrl+space+space will open cscope results in vertically split window
+	nmap <C-@><C-@>s :vert scs find s <C-R>=expand("<cword>")<CR><CR>
+	nmap <C-@><C-@>g :vert scs find g <C-R>=expand("<cword>")<CR><CR>
+	nmap <C-@><C-@>c :vert scs find c <C-R>=expand("<cword>")<CR><CR>
+	nmap <C-@><C-@>t :vert scs find t <C-R>=expand("<cword>")<CR><CR>
+	nmap <C-@><C-@>e :vert scs find e <C-R>=expand("<cword>")<CR><CR>
+	nmap <C-@><C-@>i :vert scs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
+	nmap <C-@><C-@>d :vert scs find d <C-R>=expand("<cword>")<CR><CR>
 endif
 
 " Make any text wider than 80 char highlight in red
@@ -189,8 +158,8 @@ endif
 
 " Jump to last position when reopening a file
 if has("autocmd")
-  au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$")
-    \| exe "normal! g'\"" | endif
+	au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$")
+		\| exe "normal! g'\"" | endif
 endif
 
 " }}}
@@ -251,61 +220,61 @@ nnoremap <leader>vs :vsp <CR>:exec("tag ".expand("<cword>"))<CR>
 
 " Functions --------------------------------------------------------- {{{
 function! s:DiffWithSaved()
-  let filetype=&ft
-  diffthis
-  vnew | r # | normal! 1Gdd
-  diffthis
-  exe "setlocal bt=nofile bh=wipe nobl noswf ro ft=" . filetype
+	let filetype=&ft
+	diffthis
+	vnew | r # | normal! 1Gdd
+	diffthis
+	exe "setlocal bt=nofile bh=wipe nobl noswf ro ft=" . filetype
 endfunction
 com! DiffSaved call s:DiffWithSaved()
 
 function! MyModified()
-  return &ft =~ 'help' ? '' : &modified ? '+' : &modifiable ? '' : '-'
+	return &ft =~ 'help' ? '' : &modified ? '+' : &modifiable ? '' : '-'
 endfunction
 
 function! MyReadonly()
-  return &ft !~? 'help' && &readonly ? 'RO' : ''
+	return &ft !~? 'help' && &readonly ? 'RO' : ''
 endfunction
 
 function! MyFilename()
-  let fname = expand('%:t')
-  return ('' != MyReadonly() ? MyReadonly() . ' ' : '') .
-        \ ('' != fname ? fname : '[No Name]') .
-        \ ('' != MyModified() ? ' ' . MyModified() : '')
+	let fname = expand('%:t')
+	return ('' != MyReadonly() ? MyReadonly() . ' ' : '') .
+				\ ('' != fname ? fname : '[No Name]') .
+				\ ('' != MyModified() ? ' ' . MyModified() : '')
 endfunction
 
 function! MyFileformat()
-  return winwidth(0) > 70 ? &fileformat : ''
+	return winwidth(0) > 70 ? &fileformat : ''
 endfunction
 
 function! MyFiletype()
-  return winwidth(0) > 70 ? (strlen(&filetype) ? &filetype : 'no ft') : ''
+	return winwidth(0) > 70 ? (strlen(&filetype) ? &filetype : 'no ft') : ''
 endfunction
 
 function! MyFileencoding()
-  return winwidth(0) > 70 ? (strlen(&fenc) ? &fenc : &enc) : ''
+	return winwidth(0) > 70 ? (strlen(&fenc) ? &fenc : &enc) : ''
 endfunction
 
 function! MyMode()
-  let fname = expand('%:t')
-  return winwidth(0) > 60 ? lightline#mode() : ''
+	let fname = expand('%:t')
+	return winwidth(0) > 60 ? lightline#mode() : ''
 endfunction
 
 function! MyFuncName()
-  return tagbar#currenttag('%s','')
+	return tagbar#currenttag('%s','')
 endfunction
 " }}}
 
 
 " Srt Specific ----------------------------------------------------- {{{
 augroup SRT
-  au!
+	au!
 
-  " Recognize srt files for syntax highlighting
-  au BufRead,BufNewFile *.srt		setfiletype srt
+	" Recognize srt files for syntax highlighting
+	au BufRead,BufNewFile *.srt		setfiletype srt
 
-  " Move to the next subtitle in a srt file
-  au BufRead *.srt nnoremap nn :execute "normal! /^\\d\\+$\rjjzz:setlocal nohlsearch\r"<cr>
+	" Move to the next subtitle in a srt file
+	au BufRead *.srt nnoremap nn :execute "normal! /^\\d\\+$\rjjzz:setlocal nohlsearch\r"<cr>
 augroup END
 " }}}
 
@@ -313,16 +282,19 @@ augroup END
 " Mutt Specific ----------------------------------------------------- {{{
 " F1 through F3 re-wraps paragraphs in useful ways
 augroup MUTT
-  au!
-  au BufRead ~/.mutt/temp/mutt* set spell " <-- vim 7 required
-  au BufRead ~/.mutt/temp/mutt* nmap  <F1>	gqap
-  au BufRead ~/.mutt/temp/mutt* nmap  <F2>	gqqj
-  au BufRead ~/.mutt/temp/mutt* nmap  <F3>	kgqj
-  au BufRead ~/.mutt/temp/mutt* map!  <F1>	<ESC>gqapi
-  au BufRead ~/.mutt/temp/mutt* map!  <F2>	<ESC>gqqji
-  au BufRead ~/.mutt/temp/mutt* map!  <F3>	<ESC>kgqji
+	au!
+	au BufRead ~/.mutt/temp/mutt* set spell " <-- vim 7 required
+	au BufRead ~/.mutt/temp/mutt* nmap  <F1>	gqap
+	au BufRead ~/.mutt/temp/mutt* nmap  <F2>	gqqj
+	au BufRead ~/.mutt/temp/mutt* nmap  <F3>	kgqj
+	au BufRead ~/.mutt/temp/mutt* map!  <F1>	<ESC>gqapi
+	au BufRead ~/.mutt/temp/mutt* map!  <F2>	<ESC>gqqji
+	au BufRead ~/.mutt/temp/mutt* map!  <F3>	<ESC>kgqji
 augroup END
 " }}}
 
-" Test
-autocmd BufNewFile,BufReadPost wlioctl.h let b:tagbar_ignore = 1
+
+" Exceptions ----------------------------------------------------- {{{
+" This file takes exceptionally long to load with tagbar, so have tagbar ignore it
+autocmd BufReadPre wlioctl.h let b:tagbar_ignore = 1
+" }}}
