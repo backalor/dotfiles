@@ -66,7 +66,7 @@ function working_directory() {
 		in_home=1
 	fi
 
-	if [[ `tput cols` -lt 110 ]]; then		# <-- Checking the term width
+	if [[ `tput cols` -lt 120 ]]; then		# <-- Checking the term width
 		first="/`echo $dir | cut -d / -f 2`"
 		letter=${first:0:2}
 		if [[ $in_home == 1 ]]; then
