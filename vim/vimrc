@@ -30,18 +30,14 @@ call vundle#rc()
 Bundle 'gmarik/vundle'
 
 " Plugins here
-Bundle 'https://github.com/bling/vim-airline'
+Bundle 'itchyny/lightline.vim'
 Bundle 'https://github.com/altercation/vim-colors-solarized.git'
-Bundle 'https://github.com/kien/ctrlp.vim.git'
-Bundle 'https://github.com/tpope/vim-pathogen.git'
 Bundle 'https://github.com/vim-scripts/taglist.vim.git'
 Bundle 'https://github.com/airblade/vim-gitgutter.git'
-Bundle 'https://github.com/tpope/vim-sleuth.git'
+" Bundle 'https://github.com/tpope/vim-sleuth.git'
+Bundle 'https://github.com/ciaranm/detectindent'
 Bundle 'https://github.com/Lokaltog/vim-easymotion.git'
-Bundle 'https://github.com/goldfeld/vim-seek.git'
 Bundle 'https://github.com/majutsushi/tagbar.git'
-Bundle 'https://github.com/steffanc/cscopemaps.vim'
-Bundle 'https://github.com/scrooloose/nerdtree.git'
 Bundle 'https://github.com/vim-scripts/Mark--Karkat'
 Bundle 'https://github.com/kshenoy/vim-signature'
 Bundle 'https://github.com/nathanaelkane/vim-indent-guides'
@@ -50,13 +46,11 @@ Bundle 'https://github.com/jamessan/vim-gnupg'
 
 let g:vundle_default_git_proto='git'
 if vundle_initialized==0
-  echo "Installing Bundles..."
-  echo ""
-  :BundleInstall
+	echo "Installing Bundles..."
+	echo ""
+	:BundleInstall
 endif
 
-let g:airline#extensions#tabline#enabled = 1
-let g:airline_powerline_fonts = 1
 let g:EasyMotion_leader_key = '<Leader>'
 let g:indent_guides_enable_on_vim_startup = 1
 
@@ -67,34 +61,40 @@ let g:solarized_termtrans=1
 " Don't use the plugin's keymapping for cscope
 let g:autocscope_menus=0
 
-" Setup Ctrl-P
-let g:ctrlp_custom_ignore = {
-  \ 'dir':  '\v[\/](\.(git|hg|svn)|\_site)$',
-  \ 'file': '\v\.(exe|so|dll|class|png|jpg|jpeg)$',
-\}
-
-" Use the nearest {.git|.svn|.hg} directory as the cwd
-let g:ctrlp_working_path_mode = 'ra'
+let g:lightline = {
+  \ 'active': {
+  \   'left': [ [ 'mode', 'paste' ], [ 'filename' ] ],
+  \   'right': [ ['percent'], [ 'fileformat', 'fileencoding', 'filetype' ], ['funcname'] ]
+  \ },
+  \ 'component_function': {
+  \   'filename': 'MyFilename',
+  \   'fileformat': 'MyFileformat',
+  \   'filetype': 'MyFiletype',
+  \   'fileencoding': 'MyFileencoding',
+  \   'mode': 'MyMode',
+  \   'funcname': 'MyFuncName',
+  \ }
+  \ }
 " }}}
 
 
 " General Options --------------------------------------------------- {{{
 let mapleader=","				" Set <leader> to ,
-set number					" Show line numbers
+set number						" Show line numbers
 set showmatch					" Show matching braces
 set cursorline					" Highlight the current line
 set incsearch					" Incremental search
-set ic						" Ignore case when searching ... 
+set ic							" Ignore case when searching ... 
 set smartcase					" ... except explicit CAPS
 set hlsearch					" Highlight all search results
 set nocompatible				" Makes vim behave in a more useful way than vi-compatible mode
-set tabstop=4					" Set tab size
-set shiftwidth=4				" Set indention size
-set cindent					" Set strict indention rules for C
+set tabstop=4					" Set tab size to 4 characters
+set shiftwidth=4				" Set autoindent tab size
+set cindent						" Set strict indention rules for C
 " set expandtab					" Insert spaces instead of tab character
 " set softtabstop=4				" Set soft tab to 4 characters
 syntax enable					" Enable syntax highlighting
-set bg=dark					" Set background to dark
+set bg=dark						" Set background to dark
 "set foldmethod=syntax				" Set the fold method to 'syntax'
 "set nofoldenable				" Start with no folding
 "set foldlevel=255				" Set the fold level to the highest value
@@ -107,7 +107,7 @@ set tags=./tags;/
 
 " Make sure 256 color terminal support is used
 if $TERM == "xterm-256color" || $TERM == "screen-256color" || $COLORTERM == "gnome-terminal"
-  set t_Co=256
+	set t_Co=256
 endif
 
 " Make any text wider than 100 char highlight in red
@@ -123,34 +123,35 @@ if has ("cscope")
   " 0 = reverse
   set csto=0
 
-  " add any cscope database in current directory
-  if filereadable("cscope.out")
-    cs add cscope.out
-    " else search up a few directories
-  elseif filereadable("../cscope.out")
-    cs add ../cscope.out
-  elseif filereadable("../../cscope.out")
-    cs add ../../cscope.out
-  elseif filereadable("../../../cscope.out")
-    cs add ../../../cscope.out
-  elseif filereadable("../../../../cscope.out")
-    cs add ../../../../cscope.out
-  elseif filereadable("../../../../../cscope.out")
-    cs add ../../../../../cscope.out
-  elseif filereadable("../../../../../../cscope.out")
-    cs add ../../../../../../cscope.out
-  elseif filereadable("../../../../../../../cscope.out")
-    cs add ../../../../../../../cscope.out
-  elseif filereadable("../../../../../../../../cscope.out")
-    cs add ../../../../../../../../cscope.out
-  elseif filereadable("../../../../../../../../../cscope.out")
-    cs add ../../../../../../../../../cscope.out
-  elseif filereadable("../../../../../../../../../../cscope.out")
-    cs add ../../../../../../../../../../cscope.out
-    " else add database pointed to by environment
-  elseif $CSCOPE_DB != ""
-    cs add $CSCOPE_DB
-  endif
+" This *should* be done by autoload_cscope.vim plugin
+"  " add any cscope database in current directory
+"  if filereadable("cscope.out")
+"      cs add cscope.out
+"      " else search up a few directories
+"  elseif filereadable("../cscope.out")
+"      cs add ../cscope.out
+"  elseif filereadable("../../cscope.out")
+"      cs add ../../cscope.out
+"  elseif filereadable("../../../cscope.out")
+"      cs add ../../../cscope.out
+"  elseif filereadable("../../../../cscope.out")
+"      cs add ../../../../cscope.out
+"  elseif filereadable("../../../../../cscope.out")
+"      cs add ../../../../../cscope.out
+"  elseif filereadable("../../../../../../cscope.out")
+"      cs add ../../../../../../cscope.out
+"  elseif filereadable("../../../../../../../cscope.out")
+"      cs add ../../../../../../../cscope.out
+"  elseif filereadable("../../../../../../../../cscope.out")
+"      cs add ../../../../../../../../cscope.out
+"  elseif filereadable("../../../../../../../../../cscope.out")
+"      cs add ../../../../../../../../../cscope.out
+"  elseif filereadable("../../../../../../../../../../cscope.out")
+"      cs add ../../../../../../../../../../cscope.out
+"      " else add database pointed to by environment
+"  elseif $CSCOPE_DB != ""
+"      cs add $CSCOPE_DB
+"  endif
 
   " The following maps all invoke one of the following cscope search types:
   " (note: <C-@> = <C-Space> = Ctrl+Space
@@ -243,9 +244,6 @@ nnoremap <leader>sv :source $MYVIMRC<CR>
 " Map key for Tagbar plugin (show tags)
 nnoremap <silent> <leader>b :TagbarToggle<CR>
 
-" Map key for NERDTree plugin 
-nnoremap <silent> <leader>f :NERDTreeToggle<CR>
-
 " Vertical split for tags
 nnoremap <leader>vs :vsp <CR>:exec("tag ".expand("<cword>"))<CR>
 " }}}
@@ -260,6 +258,42 @@ function! s:DiffWithSaved()
   exe "setlocal bt=nofile bh=wipe nobl noswf ro ft=" . filetype
 endfunction
 com! DiffSaved call s:DiffWithSaved()
+
+function! MyModified()
+  return &ft =~ 'help' ? '' : &modified ? '+' : &modifiable ? '' : '-'
+endfunction
+
+function! MyReadonly()
+  return &ft !~? 'help' && &readonly ? 'RO' : ''
+endfunction
+
+function! MyFilename()
+  let fname = expand('%:t')
+  return ('' != MyReadonly() ? MyReadonly() . ' ' : '') .
+        \ ('' != fname ? fname : '[No Name]') .
+        \ ('' != MyModified() ? ' ' . MyModified() : '')
+endfunction
+
+function! MyFileformat()
+  return winwidth(0) > 70 ? &fileformat : ''
+endfunction
+
+function! MyFiletype()
+  return winwidth(0) > 70 ? (strlen(&filetype) ? &filetype : 'no ft') : ''
+endfunction
+
+function! MyFileencoding()
+  return winwidth(0) > 70 ? (strlen(&fenc) ? &fenc : &enc) : ''
+endfunction
+
+function! MyMode()
+  let fname = expand('%:t')
+  return winwidth(0) > 60 ? lightline#mode() : ''
+endfunction
+
+function! MyFuncName()
+  return tagbar#currenttag('%s','')
+endfunction
 " }}}
 
 
@@ -289,3 +323,6 @@ augroup MUTT
   au BufRead ~/.mutt/temp/mutt* map!  <F3>	<ESC>kgqji
 augroup END
 " }}}
+
+" Test
+autocmd BufNewFile,BufReadPost wlioctl.h let b:tagbar_ignore = 1
