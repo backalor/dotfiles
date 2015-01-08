@@ -40,7 +40,6 @@ Bundle 'https://github.com/majutsushi/tagbar.git'
 Bundle 'https://github.com/vim-scripts/Mark--Karkat'
 Bundle 'https://github.com/kshenoy/vim-signature'
 Bundle 'https://github.com/nathanaelkane/vim-indent-guides'
-Bundle 'https://github.com/vim-scripts/autoload_cscope.vim'
 Bundle 'https://github.com/jamessan/vim-gnupg'
 
 let g:vundle_default_git_proto='git'
@@ -122,6 +121,36 @@ if has ("cscope")
 	" 0 = reverse
 	set csto=0
 
+	" add any cscope database in current directory
+	" note: this is better than the autoload_cscope plugin because it allows 'vim -t {tag}' from the command line
+	if filereadable("cscope.out")
+		cs add cscope.out
+		" else search up a few directories
+	elseif filereadable("../cscope.out")
+		cs add ../cscope.out
+	elseif filereadable("../../cscope.out")
+		cs add ../../cscope.out
+	elseif filereadable("../../../cscope.out")
+		cs add ../../../cscope.out
+	elseif filereadable("../../../../cscope.out")
+		cs add ../../../../cscope.out
+	elseif filereadable("../../../../../cscope.out")
+		cs add ../../../../../cscope.out
+	elseif filereadable("../../../../../../cscope.out")
+		cs add ../../../../../../cscope.out
+	elseif filereadable("../../../../../../../cscope.out")
+		cs add ../../../../../../../cscope.out
+	elseif filereadable("../../../../../../../../cscope.out")
+		cs add ../../../../../../../../cscope.out
+	elseif filereadable("../../../../../../../../../cscope.out")
+		cs add ../../../../../../../../../cscope.out
+	elseif filereadable("../../../../../../../../../../cscope.out")
+		cs add ../../../../../../../../../../cscope.out
+		" else add database pointed to by environment
+	elseif $CSCOPE_DB != ""
+		cs add $CSCOPE_DB
+	endif
+  
 	" The following maps all invoke one of the following cscope search types:
 	" (note: <C-@> = <C-Space> = Ctrl+Space
 	"
