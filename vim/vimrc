@@ -30,8 +30,7 @@ call vundle#rc()
 Bundle 'gmarik/vundle'
 
 " Plugins here
-Bundle 'itchyny/lightline.vim'
-Bundle 'https://github.com/altercation/vim-colors-solarized.git'
+Bundle 'https://github.com/itchyny/lightline.vim'
 Bundle 'https://github.com/vim-scripts/taglist.vim.git'
 Bundle 'https://github.com/airblade/vim-gitgutter.git'
 Bundle 'https://github.com/ciaranm/detectindent'
@@ -41,6 +40,7 @@ Bundle 'https://github.com/vim-scripts/Mark--Karkat'
 Bundle 'https://github.com/kshenoy/vim-signature'
 Bundle 'https://github.com/nathanaelkane/vim-indent-guides'
 Bundle 'https://github.com/jamessan/vim-gnupg'
+Bundle 'https://github.com/chriskempson/base16-vim'
 
 let g:vundle_default_git_proto='git'
 if vundle_initialized==0
@@ -52,12 +52,8 @@ endif
 let g:EasyMotion_leader_key = '<Leader>'
 let g:indent_guides_enable_on_vim_startup = 1
 
-" Make solarized work nicely over SSH(!)
-let g:solarized_termcolors=256
-let g:solarized_termtrans=1
-
-" Don't use the plugin's keymapping for cscope
-let g:autocscope_menus=0
+" Make base16 work with extended color space of shell
+let g:base16colorspace=256
 
 let g:lightline = {
 	\ 'active': {
@@ -93,12 +89,12 @@ set cindent						" Set strict indention rules for C
 " set softtabstop=4				" Set soft tab to 4 characters
 syntax enable					" Enable syntax highlighting
 set bg=dark						" Set background to dark
-"set foldmethod=syntax				" Set the fold method to 'syntax'
+"set foldmethod=syntax			" Set the fold method to 'syntax'
 "set nofoldenable				" Start with no folding
 "set foldlevel=255				" Set the fold level to the highest value
 set laststatus=2				" Always show statusline
-filetype plugin indent on			" Enable filetype detection, and load the plugin and indent files for that filetype
-colorscheme solarized				" Use 'solarized' colorscheme
+filetype plugin indent on		" Enable filetype detection, and load the plugin and indent files for that filetype
+colorscheme base16-railscasts	" Use 'base16-railscasts' colorscheme
 
 " Ctags file
 set tags=./tags;/
@@ -228,8 +224,11 @@ nnoremap ff :TlistOpen<CR>
 " Map key for DiffSaved function
 nnoremap shit :DiffSaved<CR>
 
-" Map key/command for BundleUpdate function (update plugins)
-nnoremap update :BundleUpdate<CR>
+" Map key/command for PluginUpdate function (update plugins)
+nnoremap update :PluginUpdate<CR>
+
+" Map key/command for PluginClean function (clean plugins)
+nnoremap clean :PluginClean!<CR>
 
 " Make j/k move one single row instead of one single line
 nnoremap j gj
@@ -244,6 +243,9 @@ nnoremap <silent> <leader>b :TagbarToggle<CR>
 
 " Vertical split for tags
 nnoremap <leader>vs :vsp <CR>:exec("tag ".expand("<cword>"))<CR>
+
+" List contents of all registers (that typically contain pasteable text).
+nnoremap <silent> "" :registers "0123456789abcdefghijklmnopqrstuvwxyz*+.<CR>
 " }}}
 
 
