@@ -191,6 +191,15 @@ if [ -x /usr/bin/dircolors ]; then
 	test -r ~/.dir_colors && eval "$(dircolors -b ~/.dir_colors)" || eval "$(dircolors -b)"
 fi
 
+# Base16 Shell
+BASE16_SHELL="$HOME/.config/base16-shell/base16-railscasts.dark.sh"
+if [[ -s $BASE16_SHELL ]]; then
+	source $BASE16_SHELL
+else
+	git clone https://github.com/chriskempson/base16-shell.git $HOME/.config/base16-shell
+	source $BASE16_SHELL
+fi
+
 # Aliases -----------------------------------------------------------------
 if [[ $OSTYPE == darwin* ]]; then
 	alias ls='ls -GF'
