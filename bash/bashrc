@@ -157,31 +157,59 @@ function stock() {
 	curl -s "http://download.finance.yahoo.com/d/quotes.csv?s=$1&f=l1"
 }
 
+function pass() {
+	if [[ $# > 0 ]]
+	then
+		pwgen -Bs $* 1 | pbcopy | pbpaste; echo “Has been copied to clipboard”
+	else
+		echo "Usage: pass <length> [<options>]"
+	fi
+}
+
 ##
 ## Simple password management in ksh-compatible shell
 ## You'll need a unix-like system and a working GPG configuration
 function pwgrep() {
-	gpg -q -d -r $GPGKEY $HOME/.auth/pwdb.asc | grep $*
+	ASCFILE=$HOME/.auth/pwdb.asc
+	gpg -q -d -r $GPGKEY $ASCFILE | grep $*
 }
 
 function pwcat() {
-	gpg -q -d -r $GPGKEY $HOME/.auth/pwdb.asc
+	if [[ -z "$1" ]]; then
+		ASCFILE=$HOME/.auth/pwdb.asc
+	else
+		ASCFILE=$1
+	fi
+	gpg -q -d -r $GPGKEY $ASCFILE
 }
 
 function pwinit() {
-	mkdir -p $HOME/.auth
-	if [ ! -f $HOME/.auth/pwdb.asc ] ; then
-		echo -n | gpg -q -a -e -r $GPGKEY > $HOME/.auth/pwdb.asc
+	if [[ -z "$1" ]]; then
+		ASCFILE=$HOME/.auth/pwdb.asc
+		mkdir -p $HOME/.auth
+	else
+		ASCFILE=$1
+	fi
+	if [[ ! -f $ASCFILE ]]; then
+		echo -n | gpg -q -a -e -r $GPGKEY > $ASCFILE
+	else
+		cat $ASCFILE | gpg -q -a -e -r $GPGKEY > $ASCFILE.asc
+		srm -f $ASCFILE
 	fi
 }
 
 function pwedit() {
 	[ -z $EDITOR ] && EDITOR=vi
+	if [[ -z "$1" ]]; then
+		ASCFILE=$HOME/.auth/pwdb.asc
+	else
+		ASCFILE=$1
+	fi
 	file=`mktemp /tmp/pwedit.XXXXXX`
-	gpg -q -d -r $GPGKEY $HOME/.auth/pwdb.asc > $file	&& \
+	gpg -q -d -r $GPGKEY $ASCFILE > $file				&& \
 			$EDITOR $file								&& \
 			gpg -q -a -e -r $GPGKEY $file				&& \
-			mv ${file}.asc $HOME/.auth/pwdb.asc
+			mv ${file}.asc $ASCFILE
 	srm -f $file ${file}.asc
 }
 
@@ -250,4 +278,4 @@ set convert-meta off
 shopt -s histappend				# Append rather than overwrite the history on disk
 shopt -s cdspell				# Ignore small typos when changing directory
 shopt -s nocaseglob				# Case-insensitive filename globbing
-shopt -s checkwinsize				# Update LINES and COLUMNS based on window size
+shopt -s checkwinsize			# Update LINES and COLUMNS based on window size
