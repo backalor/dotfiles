@@ -15,38 +15,38 @@ endif
 " }}}
 
 " Plugins ------------------------------------------------------------ {{{
-" If vundle isn't installed, install it. If it is installed, update
+" If vim-plug isn't installed, install it. If it is installed, update
 " it and activate the bundles
-let vundle_initialized=1
-let vundle_readme=expand('~/.vim/bundle/vundle/README.md')
-if !filereadable(vundle_readme)
-	echo "Installing Vundle..."
+let plug_vim_initialized=1
+let plug_vim=expand('~/.vim/autoload/plug.vim')
+if !filereadable(plug_vim)
+	echo "Installing vim-plug..."
 	echo ""
-	silent !git clone https://github.com/gmarik/vundle ~/.vim/bundle/vundle
-	let vundle_initialized=0
+	silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+	let plug_vim_initialized=0
 endif
-set rtp+=~/.vim/bundle/vundle
-call vundle#rc()
-Bundle 'gmarik/vundle'
+call plug#begin('~/.vim/bundle')
 
 " Plugins here
-Bundle 'https://github.com/itchyny/lightline.vim'
-Bundle 'https://github.com/vim-scripts/taglist.vim.git'
-Bundle 'https://github.com/airblade/vim-gitgutter.git'
-Bundle 'https://github.com/ciaranm/detectindent'
-Bundle 'https://github.com/Lokaltog/vim-easymotion.git'
-Bundle 'https://github.com/majutsushi/tagbar.git'
-Bundle 'https://github.com/vim-scripts/Mark--Karkat'
-Bundle 'https://github.com/kshenoy/vim-signature'
-Bundle 'https://github.com/nathanaelkane/vim-indent-guides'
-Bundle 'https://github.com/jamessan/vim-gnupg'
-Bundle 'https://github.com/chriskempson/base16-vim'
+Plug 'https://github.com/itchyny/lightline.vim.git'
+Plug 'https://github.com/vim-scripts/taglist.vim.git', { 'on': 'TlistOpen' }
+Plug 'https://github.com/airblade/vim-gitgutter.git'
+Plug 'https://github.com/ciaranm/detectindent'
+Plug 'https://github.com/Lokaltog/vim-easymotion.git'
+Plug 'https://github.com/majutsushi/tagbar.git'
+Plug 'https://github.com/vim-scripts/Mark--Karkat'
+Plug 'https://github.com/kshenoy/vim-signature'
+Plug 'https://github.com/nathanaelkane/vim-indent-guides'
+Plug 'https://github.com/jamessan/vim-gnupg'
+Plug 'https://github.com/chriskempson/base16-vim'
+Plug 'https://github.com/justinmk/vim-syntax-extra'
 
-let g:vundle_default_git_proto='git'
-if vundle_initialized==0
-	echo "Installing Bundles..."
+call plug#end()
+
+if plug_vim_initialized==0
+	echo "Installing Plugs..."
 	echo ""
-	:BundleInstall
+	:PlugInstall
 endif
 
 let g:EasyMotion_leader_key = '<Leader>'
@@ -82,6 +82,8 @@ set ic							" Ignore case when searching ...
 set smartcase					" ... except explicit CAPS
 set hlsearch					" Highlight all search results
 set nocompatible				" Makes vim behave in a more useful way than vi-compatible mode
+set exrc						" Execute .vimrc files present in working directory
+set secure						" Restrict usage of some commands in non-default .vimrc files
 set tabstop=4					" Set tab size to 4 characters
 set shiftwidth=4				" Set autoindent tab size
 set cindent						" Set strict indention rules for C
@@ -224,11 +226,11 @@ nnoremap ff :TlistOpen<CR>
 " Map key for DiffSaved function
 nnoremap shit :DiffSaved<CR>
 
-" Map key/command for PluginUpdate function (update plugins)
-nnoremap update :PluginUpdate<CR>
+" Map key/command for PlugUpdate function (update plugins)
+nnoremap update :PlugUpdate<CR>
 
-" Map key/command for PluginClean function (clean plugins)
-nnoremap clean :PluginClean!<CR>
+" Map key/command for PlugClean function (clean plugins)
+nnoremap clean :PlugClean!<CR>
 
 " Make j/k move one single row instead of one single line
 nnoremap j gj
