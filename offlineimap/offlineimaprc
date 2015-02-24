@@ -1,0 +1,41 @@
+[general]
+ui = basic
+accounts = Brian
+pythonfile = ~/.mutt/offlineimap.py
+fsync = False
+
+[Account Brian]
+localrepository = Brian-Local
+remoterepository = Brian-Remote
+status_backend = sqlite
+
+[Repository Brian-Local]
+type = Maildir
+localfolders = ~/.mail/brian-pixeltree.org
+nametrans = lambda folder: {'drafts': 	'INBOX.Drafts',
+							'sent':		'INBOX.Sent Items',
+							'archive':	'INBOX.Archive',
+							'inbox':	'INBOX',
+							}.get(folder, folder)
+
+[Repository Brian-Remote]
+maxconnections = 1
+type = IMAP
+remoteuser = brianh@fastmail.com
+remotehost = mail.messagingengine.com
+remoteport = 993
+ssl = yes
+cert_fingerprint = 958b1601563aef92607a41eb5bad22e3cace8431
+expunge = no
+maxconnections = 3
+remotepasseval = get_keychain_pass(account="brianh@fastmail.com", server="mail.messagingengine.com")
+realdelete = yes
+folderfilter = lambda folder: folder not in ['INBOX.Trash',
+                                             'INBOX.Junk Mail',
+                                             ]
+nametrans = lambda folder: {'INBOX.Drafts':		'drafts',
+							'INBOX.Sent Items':	'sent',
+							'INBOX.Archive':	'archive',
+							'INBOX':			'inbox',
+							}.get(folder, folder)
+
