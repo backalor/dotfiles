@@ -40,6 +40,7 @@ Plug 'https://github.com/nathanaelkane/vim-indent-guides'
 Plug 'https://github.com/jamessan/vim-gnupg'
 Plug 'https://github.com/chriskempson/base16-vim'
 Plug 'https://github.com/justinmk/vim-syntax-extra'
+Plug 'https://github.com/ap/vim-buftabline'
 
 call plug#end()
 
@@ -236,6 +237,11 @@ nnoremap clean :PlugClean!<CR>
 nnoremap j gj
 nnoremap k gk
 
+" Use buffers like tabs
+set hidden
+nnoremap <C-N> :bnext<CR>
+nnoremap <C-P> :bprev<CR>
+
 " Keymappings for easy editing for vimrc file
 nnoremap <leader>ev :vsplit $MYVIMRC<CR>
 nnoremap <leader>sv :source $MYVIMRC<CR>
@@ -330,4 +336,7 @@ augroup END
 " Exceptions ----------------------------------------------------- {{{
 " This file takes exceptionally long to load with tagbar, so have tagbar ignore it
 autocmd BufReadPre wlioctl.h let b:tagbar_ignore = 1
+
+" Only turn on cindent for *.c files
+autocmd BufReadPre *.c set cindent
 " }}}
