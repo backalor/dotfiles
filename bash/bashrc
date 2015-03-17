@@ -145,6 +145,12 @@ function patchdiff() {
 		mv tmp.XXX "$1"
 }
 
+function -() {
+	printf -v DASH '\e[0;31m%*s\e[00m' $(tput cols)
+	DASH="${DASH// /─}"
+	echo "${DASH}"
+}
+
 function xe() {
 	if [[ $OSTYPE == darwin* ]]; then
 		wget -qO- "http://www.google.com/finance/converter?a=$1&from=$2&to=$3&hl=es" |	gsed '/res/!d;s/<[^>]*>//g';
