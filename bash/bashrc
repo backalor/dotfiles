@@ -148,7 +148,7 @@ function patchdiff() {
 function -() {
 	if [[ $# > 0 ]]
 	then
-		X_WORD_LENGTH_TOTAL=$(expr length $1)
+		X_WORD_LENGTH_TOTAL=$(expr length "$1")
 		X_WORD_LENGTH_HALF=$((${X_WORD_LENGTH_TOTAL} / 2))
 		X_WORD_LENGTH=$((${X_WORD_LENGTH_HALF} + 1))
 		X_TERM_LENGTH=$(tput cols)
