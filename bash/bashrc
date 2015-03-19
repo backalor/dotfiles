@@ -222,7 +222,7 @@ function pwinit() {
 }
 
 function pwedit() {
-	[ -z $EDITOR ] && EDITOR=vi
+	[ -z $EDITOR ] && EDITOR=vim
 	if [[ -z "$1" ]]; then
 		ASCFILE=$HOME/.auth/pwdb.asc
 	else
@@ -289,8 +289,8 @@ export PATH=/usr/local/sbin:/usr/local/bin:~/Scripts:$PATH
 export GPGKEY=FFFFFFFF
 export LC_CTYPE=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
-export GIT_EDITOR=vi
-export EDITOR=vi
+export GIT_EDITOR=vim
+export EDITOR=vim
 export TERM="xterm-256color"
 export HISTIGNORE=$'[ \t]*:&:[fb]g:exit:ls:pwgrep*:pwedit*:pwcat*'
 export HISTCONTROL=$HISTCONTROL${HISTCONTROL+,}ignoreboth
