@@ -145,6 +145,19 @@ function patchdiff() {
 		mv tmp.XXX "$1"
 }
 
+function --() {
+	X_DATE=`date`
+	X_WORD_LENGTH_TOTAL=$(expr length "${X_DATE}")
+	X_WORD_LENGTH_HALF=$((${X_WORD_LENGTH_TOTAL} / 2))
+	X_WORD_LENGTH=$((${X_WORD_LENGTH_HALF} + 1))
+	X_TERM_LENGTH=$(tput cols)
+	X_TERM_SIZE=$((${X_TERM_LENGTH} / 2))
+	X_SIZE=$((${X_TERM_SIZE} - ${X_WORD_LENGTH}))
+	printf -v DASH '\e[0;31m%*s\e[00m' ${X_SIZE}
+	DASH="${DASH// /─}"
+	echo "${DASH} ${X_DATE} ${DASH}"
+}
+
 function -() {
 	if [[ $# > 0 ]]
 	then
