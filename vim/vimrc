@@ -41,6 +41,7 @@ Plug 'https://github.com/jamessan/vim-gnupg'
 Plug 'https://github.com/chriskempson/base16-vim'
 Plug 'https://github.com/justinmk/vim-syntax-extra'
 Plug 'https://github.com/ap/vim-buftabline'
+Plug 'https://github.com/junegunn/vim-peekaboo'
 
 call plug#end()
 
@@ -108,8 +109,13 @@ if $TERM == "xterm-256color" || $TERM == "screen-256color" || $COLORTERM == "gno
 endif
 
 " Make any text wider than 100 char highlight in red
-"highlight OverLength ctermbg=red ctermfg=white guibg=#592929
-"match OverLength /\%101v.\+/
+highlight OverLength ctermbg=red ctermfg=white guibg=#592929
+autocmd BufWinEnter * match OverLength /\%101v.\+/
+
+" Make any trailing whitespace highlight in red
+highlight ExtraWhitespace ctermbg=red ctermfg=white guibg=#592929
+autocmd BufWinEnter * match ExtraWhitespace /\s\+\%#\@<!$/
+autocmd InsertLeave * redraw!
 
 " Cscope
 if has ("cscope")
@@ -180,13 +186,9 @@ if has ("cscope")
 	nmap <C-@><C-@>d :vert scs find d <C-R>=expand("<cword>")<CR><CR>
 endif
 
-" Make any text wider than 80 char highlight in red
-"highlight OverLength ctermbg=red ctermfg=white guibg=#592929
-"match OverLength /\%81v.\+/
-
 " Jump to last position when reopening a file
 if has("autocmd")
-	au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$")
+	autocmd BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$")
 		\| exe "normal! g'\"" | endif
 endif
 
@@ -196,7 +198,7 @@ endif
 " Key Mappings ------------------------------------------------------ {{{
 
 " Turn off highlighted search results
-nnoremap \q :nohlsearch<CR>
+nnoremap \q :nohlsearch<CR>:MarkClear<CR>
 
 " Change entire file between softtabs and hardtabs
 nnoremap \t :setlocal expandtab!<CR>:setlocal softtabstop=4<CR>:retab!<CR>
@@ -253,7 +255,7 @@ nnoremap <silent> <leader>b :TagbarToggle<CR>
 nnoremap <leader>vs :vsp <CR>:exec("tag ".expand("<cword>"))<CR>
 
 " List contents of all registers (that typically contain pasteable text).
-nnoremap <silent> "" :registers "0123456789abcdefghijklmnopqrstuvwxyz*+.<CR>
+"nnoremap <silent> "" :registers "0123456789abcdefghijklmnopqrstuvwxyz*+.<CR>
 " }}}
 
 
@@ -335,7 +337,9 @@ augroup END
 
 " Exceptions ----------------------------------------------------- {{{
 " This file takes exceptionally long to load with tagbar, so have tagbar ignore it
-autocmd BufReadPre wlioctl.h let b:tagbar_ignore = 1
+if has("autocmd")
+	autocmd BufReadPre wlioctl.h let b:tagbar_ignore = 1
+endif
 
 " Only turn on cindent for *.c files
 autocmd BufReadPre *.c set cindent
