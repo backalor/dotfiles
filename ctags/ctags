@@ -20,3 +20,4 @@
 --exclude=tags
 --exclude=cscope.\*
 --exclude=\*.tar.\*
+--recurse=yes
