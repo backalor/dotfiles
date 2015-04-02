@@ -42,6 +42,7 @@ Plug 'https://github.com/chriskempson/base16-vim'
 Plug 'https://github.com/justinmk/vim-syntax-extra'
 Plug 'https://github.com/ap/vim-buftabline'
 Plug 'https://github.com/junegunn/vim-peekaboo'
+Plug 'https://github.com/Yggdroot/indentLine'
 
 call plug#end()
 
@@ -53,6 +54,7 @@ endif
 
 let g:EasyMotion_leader_key = '<Leader>'
 let g:indent_guides_enable_on_vim_startup = 1
+let g:indentLine_char = '│'
 
 " Make base16 work with extended color space of shell
 let g:base16colorspace=256
@@ -124,7 +126,7 @@ if has ("cscope")
 
 	" 1 = check ctags for definition of a symbol before checking cscope
 	" 0 = reverse
-	set csto=0
+	set csto=1
 
 	" add any cscope database in current directory
 	" note: this is better than the autoload_cscope plugin because it allows 'vim -t {tag}' from the command line
@@ -192,13 +194,22 @@ if has("autocmd")
 		\| exe "normal! g'\"" | endif
 endif
 
+" Persistent undo
+if exists("&undodir")
+	set undofile
+	let &undodir=&directory
+	set undolevels=500
+	set undoreload=500
+endif
+
 " }}}
 
 
 " Key Mappings ------------------------------------------------------ {{{
 
 " Turn off highlighted search results
-nnoremap \q :nohlsearch<CR>:MarkClear<CR>
+nnoremap \q :nohlsearch<CR>
+nnoremap \Q :nohlsearch<CR>:MarkClear<CR>
 
 " Change entire file between softtabs and hardtabs
 nnoremap \t :setlocal expandtab!<CR>:setlocal softtabstop=4<CR>:retab!<CR>
