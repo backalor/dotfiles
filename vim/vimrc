@@ -194,14 +194,6 @@ if has("autocmd")
 		\| exe "normal! g'\"" | endif
 endif
 
-" Persistent undo
-if exists("&undodir")
-	set undofile
-	let &undodir=&directory
-	set undolevels=500
-	set undoreload=500
-endif
-
 " }}}
 
 
