@@ -36,7 +36,6 @@ Plug 'https://github.com/Lokaltog/vim-easymotion.git'
 Plug 'https://github.com/majutsushi/tagbar.git'
 Plug 'https://github.com/vim-scripts/Mark--Karkat'
 Plug 'https://github.com/kshenoy/vim-signature'
-Plug 'https://github.com/nathanaelkane/vim-indent-guides'
 Plug 'https://github.com/jamessan/vim-gnupg'
 Plug 'https://github.com/chriskempson/base16-vim'
 Plug 'https://github.com/justinmk/vim-syntax-extra'
@@ -57,7 +56,9 @@ let g:indent_guides_enable_on_vim_startup = 1
 let g:indentLine_char = '│'
 
 " Make base16 work with extended color space of shell
-let g:base16colorspace=256
+if $TERM != "putty-256color"
+	let g:base16colorspace=256
+endif
 
 let g:lightline = {
 	\ 'active': {
@@ -101,6 +102,7 @@ set bg=dark						" Set background to dark
 set laststatus=2				" Always show statusline
 filetype plugin indent on		" Enable filetype detection, and load the plugin and indent files for that filetype
 colorscheme base16-railscasts	" Use 'base16-railscasts' colorscheme
+set backspace=indent,eol,start	" Make backspace actually work
 
 " Ctags file
 set tags=./tags;/
@@ -123,6 +125,9 @@ autocmd InsertLeave * redraw!
 if has ("cscope")
 	" use both cscope and ctag for 'ctrl-]', ':ta', and 'vim -t'
 	set cscopetag
+
+	" Don't indicate success/failure messages
+	set nocscopeverbose
 
 	" 1 = check ctags for definition of a symbol before checking cscope
 	" 0 = reverse
