@@ -196,7 +196,11 @@ function stock() {
 function pass() {
 	if [[ $# > 0 ]]
 	then
-		pwgen -Bs $* 1 | pbcopy | pbpaste; echo “Has been copied to clipboard”
+		if [[ $OSTYPE == darwin* ]]; then
+			pwgen -sy $* 1 | pbcopy | pbpaste; echo “Has been copied to clipboard”
+		else
+			pwgen -sy $* 1
+		fi
 	else
 		echo "Usage: pass <length> [<options>]"
 	fi

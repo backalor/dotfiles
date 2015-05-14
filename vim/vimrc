@@ -42,6 +42,8 @@ Plug 'https://github.com/justinmk/vim-syntax-extra'
 Plug 'https://github.com/ap/vim-buftabline'
 Plug 'https://github.com/junegunn/vim-peekaboo'
 Plug 'https://github.com/Yggdroot/indentLine'
+Plug 'https://github.com/mhinz/vim-startify'
+Plug 'https://github.com/luochen1990/rainbow'
 
 call plug#end()
 
@@ -54,6 +56,7 @@ endif
 let g:EasyMotion_leader_key = '<Leader>'
 let g:indent_guides_enable_on_vim_startup = 1
 let g:indentLine_char = '│'
+let g:rainbow_active = 1
 
 " Make base16 work with extended color space of shell
 if $TERM != "putty-256color"
@@ -74,6 +77,9 @@ let g:lightline = {
 	\   'funcname': 'MyFuncName',
 	\ }
 	\ }
+
+let g:startify_custom_header =
+	\ map(split(system('fortune | cowsay'), '\n'), '"   ". v:val') + ['','']
 " }}}
 
 
@@ -103,6 +109,8 @@ set laststatus=2				" Always show statusline
 filetype plugin indent on		" Enable filetype detection, and load the plugin and indent files for that filetype
 colorscheme base16-railscasts	" Use 'base16-railscasts' colorscheme
 set backspace=indent,eol,start	" Make backspace actually work
+set modelines=0					" Prevent some security exploits
+set gdefault					" Apply substitutions globally on lines
 
 " Ctags file
 set tags=./tags;/
