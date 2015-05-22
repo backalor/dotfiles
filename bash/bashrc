@@ -268,9 +268,9 @@ else
 	source $BASE16_SHELL
 fi
 
-# Z script for fancy directory changing
-if [[ -s ~/scripts/z.sh ]]; then
-	. ~/scripts/z.sh
+# bash-completion
+if [[ -s /usr/share/bash-completion/bash_completion ]]; then
+	. /usr/share/bash-completion/bash_completion
 fi
 
 # Aliases -----------------------------------------------------------------
@@ -291,7 +291,7 @@ alias cmus='cd ~/Music/songs && cmus && cd -'
 alias grep='grep 2>/dev/null -I --exclude=tags --exclude=cscope* --exclude-dir=.git --exclude-dir=.svn -n --color=auto'
 alias branches='git log --all --graph --decorate --oneline --simplify-by-decoration'
 alias clea='clear'
-alias less='less -R'
+alias less='vimpager'
 alias rls='ls'
 alias df='df -h'
 alias du='du -h'
@@ -311,6 +311,7 @@ export EDITOR=vim
 export TERM="xterm-256color"
 export HISTIGNORE=$'[ \t]*:&:[fb]g:exit:ls:pwgrep*:pwedit*:pwcat*'
 export HISTCONTROL=$HISTCONTROL${HISTCONTROL+,}ignoreboth
+export PAGER=vimpager
 
 
 # Settings ----------------------------------------------------------------
