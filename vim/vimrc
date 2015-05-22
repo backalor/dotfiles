@@ -65,10 +65,11 @@ endif
 
 let g:lightline = {
 	\ 'active': {
-	\   'left': [ [ 'mode', 'paste' ], [ 'filename' ] ],
+	\   'left': [ [ 'mode', 'paste' ], [ 'filename' ], [ 'linenumber' ] ],
 	\   'right': [ ['percent'], [ 'fileformat', 'fileencoding', 'filetype' ], ['funcname'] ]
 	\ },
 	\ 'component_function': {
+	\	'linenumber': 'MyLineNumber',
 	\   'filename': 'MyFilename',
 	\   'fileformat': 'MyFileformat',
 	\   'filetype': 'MyFiletype',
@@ -86,10 +87,11 @@ let g:startify_custom_header =
 " General Options --------------------------------------------------- {{{
 let mapleader=","				" Set <leader> to ,
 set number						" Show line numbers
+set relativenumber				" Show relative line numbers
 set showmatch					" Show matching braces
 set cursorline					" Highlight the current line
 set incsearch					" Incremental search
-set ic							" Ignore case when searching ... 
+set ic							" Ignore case when searching ...
 set smartcase					" ... except explicit CAPS
 set hlsearch					" Highlight all search results
 set nocompatible				" Makes vim behave in a more useful way than vi-compatible mode
@@ -123,11 +125,6 @@ endif
 " Make any text wider than 100 char highlight in red
 highlight OverLength ctermbg=red ctermfg=white guibg=#592929
 autocmd BufWinEnter * match OverLength /\%101v.\+/
-
-" Make any trailing whitespace highlight in red
-highlight ExtraWhitespace ctermbg=red ctermfg=white guibg=#592929
-autocmd BufWinEnter * match ExtraWhitespace /\s\+\%#\@<!$/
-autocmd InsertLeave * redraw!
 
 " Cscope
 if has ("cscope")
@@ -170,7 +167,7 @@ if has ("cscope")
 	elseif $CSCOPE_DB != ""
 		cs add $CSCOPE_DB
 	endif
-  
+
 	" The following maps all invoke one of the following cscope search types:
 	" (note: <C-@> = <C-Space> = Ctrl+Space
 	"
@@ -182,12 +179,12 @@ if has ("cscope")
 	"   'f'   file:   open the filename under cursor
 	"   'i'   includes: find files that include the filename under cursor
 	"   'd'   called: find functions that function under cursor calls
-	nmap <C-@>s :cs find s <C-R>=expand("<cword>")<CR><CR>	
-	nmap <C-@>g :cs find g <C-R>=expand("<cword>")<CR><CR>	
-	nmap <C-@>c :cs find c <C-R>=expand("<cword>")<CR><CR>	
-	nmap <C-@>t :cs find t <C-R>=expand("<cword>")<CR><CR>	
-	nmap <C-@>e :cs find e <C-R>=expand("<cword>")<CR><CR>	
-	nmap <C-@>f :cs find f <C-R>=expand("<cfile>")<CR><CR>	
+	nmap <C-@>s :cs find s <C-R>=expand("<cword>")<CR><CR>
+	nmap <C-@>g :cs find g <C-R>=expand("<cword>")<CR><CR>
+	nmap <C-@>c :cs find c <C-R>=expand("<cword>")<CR><CR>
+	nmap <C-@>t :cs find t <C-R>=expand("<cword>")<CR><CR>
+	nmap <C-@>e :cs find e <C-R>=expand("<cword>")<CR><CR>
+	nmap <C-@>f :cs find f <C-R>=expand("<cfile>")<CR><CR>
 	nmap <C-@>i :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
 	nmap <C-@>d :cs find d <C-R>=expand("<cword>")<CR><CR>
 
@@ -221,8 +218,11 @@ nnoremap \t :setlocal expandtab!<CR>:setlocal softtabstop=4<CR>:retab!<CR>
 nnoremap \T :setlocal noexpandtab<CR>:setlocal tabstop=4<CR>:setlocal shiftwidth=4<CR>:retab!<CR>
 
 " Hotkeys for toggle of line numbers and paste mode
-nnoremap \l :setlocal number!<CR>
+nnoremap \l :setlocal relativenumber!<CR>:setlocal number!<CR>
 nnoremap \p :setlocal paste!<CR>
+
+" Toggle showing trailing whitespaces
+nnoremap \w :ShowTrailingWhitespaces<CR>
 
 " Code folding shortcuts
 nnoremap <space> za			" Collapse current fold
@@ -276,6 +276,23 @@ nnoremap <leader>vs :vsp <CR>:exec("tag ".expand("<cword>"))<CR>
 
 
 " Functions --------------------------------------------------------- {{{
+function! s:ToggleTrailingWhitespaces()
+	if !exists("s:trailing_whitespaces_enabled")
+		let s:trailing_whitespaces_enabled = 0
+	endif
+	if s:trailing_whitespaces_enabled
+		highlight clear TrailingWhitespace
+		autocmd! InsertLeave *
+		let s:trailing_whitespaces_enabled = 0
+	else
+		highlight TrailingWhitespace ctermbg=red ctermfg=white guibg=#592929
+		match TrailingWhitespace /\s\+\%#\@<!$/
+		autocmd InsertLeave * redraw!
+		let s:trailing_whitespaces_enabled = 1
+	endif
+endfunction
+command! ShowTrailingWhitespaces call s:ToggleTrailingWhitespaces()
+
 function! s:DiffWithSaved()
 	let filetype=&ft
 	diffthis
@@ -283,7 +300,7 @@ function! s:DiffWithSaved()
 	diffthis
 	exe "setlocal bt=nofile bh=wipe nobl noswf ro ft=" . filetype
 endfunction
-com! DiffSaved call s:DiffWithSaved()
+command! DiffSaved call s:DiffWithSaved()
 
 function! MyModified()
 	return &ft =~ 'help' ? '' : &modified ? '+' : &modifiable ? '' : '-'
@@ -291,6 +308,10 @@ endfunction
 
 function! MyReadonly()
 	return &ft !~? 'help' && &readonly ? 'RO' : ''
+endfunction
+
+function! MyLineNumber()
+	return line(".")
 endfunction
 
 function! MyFilename()
