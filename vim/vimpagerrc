@@ -1,0 +1,256 @@
+set nocompatible				" Makes vim behave in a more useful way than vi-compatible mode
+
+" Initialize --------------------------------------------------------- {{{
+if !filereadable(expand('~/.vimrc'))
+	echo "Linking .vimrc..."
+	echo ""
+	silent !ln -s ~/.vim/vimrc ~/.vimrc
+endif
+
+if !filereadable(expand('~/.fonts/ubuntu-mono-powerline-ttf/README.md'))
+	echo "Fixing fonts..."
+	echo ""
+	silent !git clone https://github.com/pdf/ubuntu-mono-powerline-ttf.git ~/.fonts/ubuntu-mono-powerline-ttf
+endif
+" }}}
+
+" Plugins ------------------------------------------------------------ {{{
+" If vim-plug isn't installed, install it. If it is installed, update
+" it and activate the bundles
+let plug_vim_initialized=1
+let plug_vim=expand('~/.vim/autoload/plug.vim')
+if !filereadable(plug_vim)
+	echo "Installing vim-plug..."
+	echo ""
+	silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+	let plug_vim_initialized=0
+endif
+call plug#begin('~/.vim/bundle')
+
+" Plugins here
+Plug 'https://github.com/itchyny/lightline.vim.git'
+Plug 'https://github.com/ciaranm/detectindent'
+Plug 'https://github.com/Lokaltog/vim-easymotion.git'
+Plug 'https://github.com/majutsushi/tagbar.git'
+Plug 'https://github.com/vim-scripts/Mark--Karkat'
+Plug 'https://github.com/kshenoy/vim-signature'
+Plug 'https://github.com/chriskempson/base16-vim'
+Plug 'https://github.com/justinmk/vim-syntax-extra'
+Plug 'https://github.com/ap/vim-buftabline'
+Plug 'https://github.com/junegunn/vim-peekaboo'
+Plug 'https://github.com/Yggdroot/indentLine'
+
+call plug#end()
+
+if plug_vim_initialized==0
+	echo "Installing Plugs..."
+	echo ""
+	:PlugInstall
+endif
+
+let g:EasyMotion_leader_key = '<Leader>'
+let g:indent_guides_enable_on_vim_startup = 1
+let g:indentLine_char = '│'
+
+" Make base16 work with extended color space of shell
+if $TERM != "putty-256color"
+	let g:base16colorspace=256
+endif
+
+let g:lightline = {
+	\ 'active': {
+	\   'left': [ [ 'mode', 'paste' ], [ 'filename' ], [ 'linenumber' ] ],
+	\   'right': [ ['percent'], [ 'fileformat', 'fileencoding', 'filetype' ], ['funcname'] ]
+	\ },
+	\ 'component_function': {
+	\	'linenumber': 'MyLineNumber',
+	\   'filename': 'MyFilename',
+	\   'fileformat': 'MyFileformat',
+	\   'filetype': 'MyFiletype',
+	\   'fileencoding': 'MyFileencoding',
+	\   'mode': 'MyMode',
+	\   'funcname': 'MyFuncName',
+	\ }
+	\ }
+" }}}
+
+
+" General Options --------------------------------------------------- {{{
+let mapleader=","				" Set <leader> to ,
+set number						" Show line numbers
+set relativenumber				" Show relative line numbers
+set showmatch					" Show matching braces
+set cursorline					" Highlight the current line
+set incsearch					" Incremental search
+set ic							" Ignore case when searching ...
+set smartcase					" ... except explicit CAPS
+set hlsearch					" Highlight all search results
+set nocompatible				" Makes vim behave in a more useful way than vi-compatible mode
+set exrc						" Execute .vimrc files present in working directory
+set secure						" Restrict usage of some commands in non-default .vimrc files
+set tabstop=4					" Set tab size to 4 characters
+set shiftwidth=4				" Set autoindent tab size
+syntax enable					" Enable syntax highlighting
+set bg=dark						" Set background to dark
+set laststatus=2				" Always show statusline
+filetype plugin indent on		" Enable filetype detection, and load the plugin and indent files for that filetype
+colorscheme base16-railscasts	" Use 'base16-railscasts' colorscheme
+set backspace=indent,eol,start	" Make backspace actually work
+set modelines=0					" Prevent some security exploits
+set gdefault					" Apply substitutions globally on lines
+
+" Make sure 256 color terminal support is used
+if $TERM == "xterm-256color" || $TERM == "screen-256color" || $COLORTERM == "gnome-terminal"
+	set t_Co=256
+endif
+
+" }}}
+
+
+" Key Mappings ------------------------------------------------------ {{{
+
+" Turn off highlighted search results
+nnoremap \q :nohlsearch<CR>
+nnoremap \Q :nohlsearch<CR>:MarkClear<CR>
+
+" Change entire file between softtabs and hardtabs
+nnoremap \t :setlocal expandtab!<CR>:setlocal softtabstop=4<CR>:retab!<CR>
+nnoremap \T :setlocal noexpandtab<CR>:setlocal tabstop=4<CR>:setlocal shiftwidth=4<CR>:retab!<CR>
+
+" Hotkeys for toggle of line numbers and paste mode
+nnoremap \l :setlocal relativenumber!<CR>:setlocal number!<CR>
+nnoremap \p :setlocal paste!<CR>
+
+" Toggle showing trailing whitespaces
+nnoremap \w :ShowTrailingWhitespaces<CR>
+
+" Change text encoding to Japanese Shift-JIS with Ctrl-J
+nnoremap <C-j> :setlocal encoding=sjis<CR>:setlocal fileencodings=cp932<CR>:e!<CR>
+
+" Disable arrow keys to force learning hjkl
+nnoremap <up> <nop>
+nnoremap <down> <nop>
+nnoremap <left> <nop>
+nnoremap <right> <nop>
+
+" Map key for TagList plugin (show functions)
+nnoremap ff :TlistOpen<CR>
+
+" Map key for DiffSaved function
+nnoremap shit :DiffSaved<CR>
+
+" Map key/command for PlugUpdate function (update plugins)
+nnoremap update :PlugUpdate<CR>
+
+" Map key/command for PlugClean function (clean plugins)
+nnoremap clean :PlugClean!<CR>
+
+" Make j/k move one single row instead of one single line
+nnoremap j gj
+nnoremap k gk
+
+" Use buffers like tabs
+set hidden
+nnoremap <C-N> :bnext<CR>
+nnoremap <C-P> :bprev<CR>
+
+" Keymappings for easy editing for vimrc file
+nnoremap <leader>ev :vsplit $MYVIMRC<CR>
+nnoremap <leader>sv :source $MYVIMRC<CR>
+
+" Map key for Tagbar plugin (show tags)
+nnoremap <silent> <leader>b :TagbarToggle<CR>
+
+" Vertical split for tags
+nnoremap <leader>vs :vsp <CR>:exec("tag ".expand("<cword>"))<CR>
+" }}}
+
+
+" Functions --------------------------------------------------------- {{{
+function! s:ToggleTrailingWhitespaces()
+	if !exists("s:trailing_whitespaces_enabled")
+		let s:trailing_whitespaces_enabled = 0
+	endif
+	if s:trailing_whitespaces_enabled
+		highlight clear TrailingWhitespace
+		autocmd! InsertLeave *
+		let s:trailing_whitespaces_enabled = 0
+	else
+		highlight TrailingWhitespace ctermbg=red ctermfg=white guibg=#592929
+		match TrailingWhitespace /\s\+\%#\@<!$/
+		autocmd InsertLeave * redraw!
+		let s:trailing_whitespaces_enabled = 1
+	endif
+endfunction
+command! ShowTrailingWhitespaces call s:ToggleTrailingWhitespaces()
+
+function! s:DiffWithSaved()
+	let filetype=&ft
+	diffthis
+	vnew | r # | normal! 1Gdd
+	diffthis
+	exe "setlocal bt=nofile bh=wipe nobl noswf ro ft=" . filetype
+endfunction
+command! DiffSaved call s:DiffWithSaved()
+
+function! MyModified()
+	return &ft =~ 'help' ? '' : &modified ? '+' : &modifiable ? '' : '-'
+endfunction
+
+function! MyReadonly()
+	return &ft !~? 'help' && &readonly ? 'RO' : ''
+endfunction
+
+function! MyLineNumber()
+	return line(".")
+endfunction
+
+function! MyFilename()
+	let fname = expand('%:t')
+	return ('' != MyReadonly() ? MyReadonly() . ' ' : '') .
+				\ ('' != fname ? fname : '[No Name]') .
+				\ ('' != MyModified() ? ' ' . MyModified() : '')
+endfunction
+
+function! MyFileformat()
+	return winwidth(0) > 70 ? &fileformat : ''
+endfunction
+
+function! MyFiletype()
+	return winwidth(0) > 70 ? (strlen(&filetype) ? &filetype : 'no ft') : ''
+endfunction
+
+function! MyFileencoding()
+	return winwidth(0) > 70 ? (strlen(&fenc) ? &fenc : &enc) : ''
+endfunction
+
+function! MyMode()
+	let fname = expand('%:t')
+	return winwidth(0) > 60 ? lightline#mode() : ''
+endfunction
+
+function! MyFuncName()
+	return tagbar#currenttag('%s','')
+endfunction
+" }}}
+
+
+" Srt Specific ----------------------------------------------------- {{{
+augroup SRT
+	au!
+
+	" Recognize srt files for syntax highlighting
+	au BufRead,BufNewFile *.srt		setfiletype srt
+
+	" Move to the next subtitle in a srt file
+	au BufRead *.srt nnoremap nn :execute "normal! /^\\d\\+$\rjjzz:setlocal nohlsearch\r"<cr>
+augroup END
+" }}}
+
+
+" Exceptions ----------------------------------------------------- {{{
+" This file takes exceptionally long to load with tagbar, so have tagbar ignore it
+if has("autocmd")
+	autocmd BufReadPre wlioctl.h let b:tagbar_ignore = 1
+endif
+" }}}
