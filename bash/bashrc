@@ -308,10 +308,24 @@ export LC_CTYPE=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
 export GIT_EDITOR=vim
 export EDITOR=vim
-export TERM="xterm-256color"
 export HISTIGNORE=$'[ \t]*:&:[fb]g:exit:ls:pwgrep*:pwedit*:pwcat*'
 export HISTCONTROL=$HISTCONTROL${HISTCONTROL+,}ignoreboth
 export PAGER=vimpager
+
+# Make vim show 256 colors properly even when using tmux
+if [[ -z $TMUX ]]; then
+	if [ -e /usr/share/terminfo/x/xterm+256color ]; then
+		export TERM='xterm-256color'
+	else
+		export TERM='xterm'
+	fi
+	else
+	if [ -e /usr/share/terminfo/s/screen-256color ]; then
+		export TERM='screen-256color'
+	else
+	export TERM='screen'
+	fi
+fi
 
 
 # Settings ----------------------------------------------------------------
@@ -319,6 +333,7 @@ set meta-flag on
 set input-meta on
 set output-meta on
 set convert-meta off
+set -o vi
 
 
 # Keybindings -------------------------------------------------------------
