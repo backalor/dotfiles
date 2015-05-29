@@ -1,0 +1,20 @@
+$include /etc/inputrc
+
+# Use vi, not emacs, style editing
+set editing-mode vi
+
+# Show all completions as soon as I press tab, even if there's more than one
+set show-all-if-ambiguous on
+
+# Ignore case
+set completion-ignore-case on
+
+$if mode=vi
+	set keymap vi-command
+	"\e[A":history-search-backward
+	"\e[B":history-search-forward
+
+	set keymap vi-insert
+	"\e[A":history-search-backward
+	"\e[B":history-search-forward
+$endif
