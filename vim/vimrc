@@ -44,6 +44,7 @@ Plug 'https://github.com/junegunn/vim-peekaboo'
 Plug 'https://github.com/Yggdroot/indentLine'
 Plug 'https://github.com/mhinz/vim-startify'
 Plug 'https://github.com/luochen1990/rainbow'
+Plug 'https://github.com/NLKNguyen/papercolor-theme'
 
 call plug#end()
 
@@ -86,7 +87,6 @@ let g:startify_custom_header =
 
 " General Options --------------------------------------------------- {{{
 let mapleader=","				" Set <leader> to ,
-set number						" Show line numbers
 set relativenumber				" Show relative line numbers
 set showmatch					" Show matching braces
 set cursorline					" Highlight the current line
@@ -99,20 +99,26 @@ set exrc						" Execute .vimrc files present in working directory
 set secure						" Restrict usage of some commands in non-default .vimrc files
 set tabstop=4					" Set tab size to 4 characters
 set shiftwidth=4				" Set autoindent tab size
-set cindent						" Set strict indention rules for C
-" set expandtab					" Insert spaces instead of tab character
-" set softtabstop=4				" Set soft tab to 4 characters
 syntax enable					" Enable syntax highlighting
 set bg=dark						" Set background to dark
-"set foldmethod=syntax			" Set the fold method to 'syntax'
-"set nofoldenable				" Start with no folding
-"set foldlevel=255				" Set the fold level to the highest value
 set laststatus=2				" Always show statusline
-filetype plugin indent on		" Enable filetype detection, and load the plugin and indent files for that filetype
-colorscheme base16-railscasts	" Use 'base16-railscasts' colorscheme
 set backspace=indent,eol,start	" Make backspace actually work
 set modelines=0					" Prevent some security exploits
 set gdefault					" Apply substitutions globally on lines
+set listchars=tab:▸\ ,trail:·,extends:#,nbsp:·
+
+filetype plugin indent on		" Enable filetype detection, and load the plugin and indent files for that filetype
+colorscheme base16-railscasts	" Use 'base16-railscasts' colorscheme
+if &diff
+	colorscheme PaperColor		" Use bright colorscheme for vimdiff
+endif
+
+" Currently unused
+"set expandtab					" Insert spaces instead of tab character
+"set softtabstop=4				" Set soft tab to 4 characters
+"set foldmethod=syntax			" Set the fold method to 'syntax'
+"set nofoldenable				" Start with no folding
+"set foldlevel=255				" Set the fold level to the highest value
 
 " Ctags file
 set tags=./tags;/
@@ -121,10 +127,6 @@ set tags=./tags;/
 if $TERM == "xterm-256color" || $TERM == "screen-256color" || $COLORTERM == "gnome-terminal"
 	set t_Co=256
 endif
-
-" Make any text wider than 100 char highlight in red
-highlight OverLength ctermbg=red ctermfg=white guibg=#592929
-autocmd BufWinEnter * match OverLength /\%101v.\+/
 
 " Cscope
 if has ("cscope")
@@ -200,7 +202,7 @@ endif
 
 " Jump to last position when reopening a file
 if has("autocmd")
-	autocmd BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$")
+	au BufReadPost *.c,*.h if line("'\"") > 0 && line("'\"") <= line("$")
 		\| exe "normal! g'\"" | endif
 endif
 
@@ -218,11 +220,14 @@ nnoremap \t :setlocal expandtab!<CR>:setlocal softtabstop=4<CR>:retab!<CR>
 nnoremap \T :setlocal noexpandtab<CR>:setlocal tabstop=4<CR>:setlocal shiftwidth=4<CR>:retab!<CR>
 
 " Hotkeys for toggle of line numbers and paste mode
-nnoremap \l :setlocal relativenumber!<CR>:setlocal number!<CR>
+nnoremap \l :setlocal relativenumber!<CR>
 nnoremap \p :setlocal paste!<CR>
 
 " Toggle showing trailing whitespaces
 nnoremap \w :ShowTrailingWhitespaces<CR>
+
+" Toggle highlighting characters for long lines
+nnoremap \o :HightlighLongLines<CR>
 
 " Code folding shortcuts
 nnoremap <space> za			" Collapse current fold
@@ -276,6 +281,24 @@ nnoremap <leader>vs :vsp <CR>:exec("tag ".expand("<cword>"))<CR>
 
 
 " Functions --------------------------------------------------------- {{{
+function! s:ToggleHighlightLongLines()
+	if !exists("s:highlight_long_lines_enabled")
+		let s:highlight_long_lines_enabled = 0
+	endif
+	if s:highlight_long_lines_enabled
+		highlight clear OverLength
+		autocmd! InsertLeave *
+		let s:highlight_long_lines_enabled = 0
+	else
+		" Make any text wider than 100 char highlight in red
+		highlight OverLength ctermbg=red ctermfg=white guibg=#592929
+		match OverLength /\%101v.\+/
+		autocmd InsertLeave * redraw!
+		let s:highlight_long_lines_enabled = 1
+	endif
+endfunction
+command! HightlighLongLines call s:ToggleHighlightLongLines()
+
 function! s:ToggleTrailingWhitespaces()
 	if !exists("s:trailing_whitespaces_enabled")
 		let s:trailing_whitespaces_enabled = 0
