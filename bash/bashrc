@@ -218,7 +218,15 @@ function pwcat() {
 	if [[ -z "$1" ]]; then
 		ASCFILE=$HOME/.auth/pwdb.asc
 	else
-		ASCFILE=$1
+		if [[ -f "$1" ]]; then
+			ASCFILE=$1
+		else
+			if [[ -f "$HOME/.auth/$1.asc" ]]; then
+				ASCFILE=$HOME/.auth/$1.asc
+			else
+				ASCFILE=$1
+			fi
+		fi
 	fi
 	gpg -q -d -r $GPGKEY $ASCFILE
 }
@@ -243,7 +251,15 @@ function pwedit() {
 	if [[ -z "$1" ]]; then
 		ASCFILE=$HOME/.auth/pwdb.asc
 	else
-		ASCFILE=$1
+		if [[ -f "$1" ]]; then
+			ASCFILE=$1
+		else
+			if [[ -f "$HOME/.auth/$1.asc" ]]; then
+				ASCFILE=$HOME/.auth/$1.asc
+			else
+				ASCFILE=$1
+			fi
+		fi
 	fi
 	file=`mktemp /tmp/pwedit.XXXXXX`
 	gpg -q -d -r $GPGKEY $ASCFILE > $file				&& \
@@ -314,16 +330,24 @@ export PAGER=vimpager
 
 # Make vim show 256 colors properly even when using tmux
 if [[ -z $TMUX ]]; then
-	if [ -e /usr/share/terminfo/x/xterm+256color ]; then
+	if [[ $OSTYPE == darwin* ]]; then
 		export TERM='xterm-256color'
 	else
-		export TERM='xterm'
+		if [ -e /usr/share/terminfo/x/xterm+256color ]; then
+			export TERM='xterm-256color'
+		else
+			export TERM='xterm'
+		fi
 	fi
-	else
-	if [ -e /usr/share/terminfo/s/screen-256color ]; then
+else
+	if [[ $OSTYPE == darwin* ]]; then
 		export TERM='screen-256color'
 	else
-	export TERM='screen'
+		if [ -e /usr/share/terminfo/s/screen-256color ]; then
+			export TERM='screen-256color'
+		else
+			export TERM='screen'
+		fi
 	fi
 fi
 
