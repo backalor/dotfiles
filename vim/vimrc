@@ -45,6 +45,7 @@ Plug 'https://github.com/Yggdroot/indentLine'
 Plug 'https://github.com/mhinz/vim-startify'
 Plug 'https://github.com/luochen1990/rainbow'
 Plug 'https://github.com/NLKNguyen/papercolor-theme'
+Plug 'https://github.com/tpope/vim-commentary'
 
 call plug#end()
 
@@ -109,7 +110,14 @@ set modelines=0					" Prevent some security exploits
 set gdefault					" Apply substitutions globally on lines
 set nrformats=hex				" Don't assume zero padded numbers are octal base when using <C-a>/<C-x>
 set timeoutlen=300				" Change timeout for mapped keys to 300ms
+set noswapfile					" Don't use a swap file
+set nobackup					" Don't use a backup file
+set diffopt+=iwhite				" Ignore whitespace in vimdiff
 set listchars=tab:▸\ ,trail:·,extends:#,nbsp:·
+set wildmenu                    " make tab completion for files/buffers act like bash
+set wildmode=list:full          " show a list when pressing tab and complete
+                                " first full match
+set wildignore=*.swp,*.bak,*.pyc,*.class,*.o,*.a
 
 filetype plugin indent on		" Enable filetype detection, and load the plugin and indent files for that filetype
 colorscheme base16-railscasts	" Use 'base16-railscasts' colorscheme
@@ -290,6 +298,14 @@ nnoremap <leader>vs :vsp <CR>:exec("tag ".expand("<cword>"))<CR>
 
 " List contents of all registers (that typically contain pasteable text).
 "nnoremap <silent> "" :registers "0123456789abcdefghijklmnopqrstuvwxyz*+.<CR>
+
+" Indent and unindent without leaving visual mode
+vnoremap < <gv
+vnoremap > >gv
+
+" Make :W same as :w, and :Q same as :q
+command! W :w
+command! Q :q
 " }}}
 
 
@@ -415,6 +431,9 @@ if has("autocmd")
 
 	" Only turn on cindent for *.c files
 	autocmd BufReadPre *.c set cindent
+
+	" Clear trailing whitespace before a save
+	autocmd BufWritePre * :%s/\s\+$//e | retab
 endif
 " }}}
 
