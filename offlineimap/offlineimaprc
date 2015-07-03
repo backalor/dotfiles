@@ -12,11 +12,13 @@ status_backend = sqlite
 [Repository Brian-Local]
 type = Maildir
 localfolders = ~/.mail/brian-pixeltree.org
-nametrans = lambda folder: {'drafts': 	'INBOX.Drafts',
+nametrans = lambda folder: {'drafts':	'INBOX.Drafts',
 							'sent':		'INBOX.Sent Items',
 							'archive':	'INBOX.Archive',
 							'inbox':	'INBOX',
 							}.get(folder, folder)
+folderfilter = lambda folder : not re.search('(^\.*)', folder)
+folderincludes = ['drafts', 'sent', 'archive', 'inbox']
 
 [Repository Brian-Remote]
 maxconnections = 1
