@@ -320,6 +320,7 @@ alias df='df -h'
 alias du='du -h'
 alias vi='vim'
 alias cd=cd_func
+alias tags='~/scripts/cscope_gen.sh'
 
 
 # Variables ---------------------------------------------------------------
