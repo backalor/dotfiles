@@ -6,12 +6,6 @@ if !filereadable(expand('$HOME/.vimrc'))
 	echo ""
 	silent !ln -s $HOME/.vim/vimrc $HOME/vimrc
 endif
-
-if !filereadable(expand('$HOME/.fonts/ubuntu-mono-powerline-ttf/README.md'))
-	echo "Fixing fonts..."
-	echo ""
-	silent !git clone https://github.com/pdf/ubuntu-mono-powerline-ttf.git $HOME/.fonts/ubuntu-mono-powerline-ttf
-endif
 " }}}
 
 " Plugins ------------------------------------------------------------ {{{
@@ -43,7 +37,7 @@ Plug 'https://github.com/ap/vim-buftabline'
 Plug 'https://github.com/junegunn/vim-peekaboo'
 Plug 'https://github.com/Yggdroot/indentLine'
 Plug 'https://github.com/mhinz/vim-startify'
-Plug 'https://github.com/luochen1990/rainbow'
+Plug 'https://github.com/kien/rainbow_parentheses.vim'
 Plug 'https://github.com/NLKNguyen/papercolor-theme'
 Plug 'https://github.com/tpope/vim-commentary'
 
@@ -55,11 +49,12 @@ if plug_vim_initialized==0
 	:PlugInstall
 endif
 
+" Plugin options
 let g:EasyMotion_leader_key = '<Leader><Leader>'
 let g:EasyMotion_smartcase = 1
 let g:indent_guides_enable_on_vim_startup = 1
 let g:indentLine_char = '│'
-let g:rainbow_active = 1
+let g:buftabline_separators = 1
 
 " Make base16 work with extended color space of shell
 if $TERM != "putty-256color"
@@ -90,7 +85,12 @@ let g:startify_session_dir = "$HOME/.vim/sessions"
 
 " General Options --------------------------------------------------- {{{
 let mapleader=","				" Set <leader> to ,
-set relativenumber				" Show relative line numbers
+if exists('+relativenumber')
+	set relativenumber			" Show relative line numbers on recent versions of vim
+	set number					" and show absolute line number on current line
+else
+	set number					" Show absolute line numbers on older versions of vim
+endif
 set showmatch					" Show matching braces
 set cursorline					" Highlight the current line
 set incsearch					" Incremental search
@@ -105,6 +105,7 @@ set shiftwidth=4				" Set autoindent tab size
 syntax enable					" Enable syntax highlighting
 set bg=dark						" Set background to dark
 set laststatus=2				" Always show statusline
+set history=200					" Increase the history buffer for command line input
 set backspace=indent,eol,start	" Make backspace actually work
 set modelines=0					" Prevent some security exploits
 set gdefault					" Apply substitutions globally on lines
@@ -115,13 +116,14 @@ set nobackup					" Don't use a backup file
 set diffopt+=iwhite				" Ignore whitespace in vimdiff
 set listchars=tab:▸\ ,trail:·,extends:#,nbsp:·
 set wildmenu                    " make tab completion for files/buffers act like bash
-set wildmode=list:full          " show a list when pressing tab and complete
+set wildmode=list:longest		" show a list when pressing tab and complete
                                 " first full match
 set wildignore=*.swp,*.bak,*.pyc,*.class,*.o,*.a
 
 filetype plugin indent on		" Enable filetype detection, and load the plugin and indent files for that filetype
 colorscheme base16-railscasts	" Use 'base16-railscasts' colorscheme
 if &diff
+	set bg=light
 	colorscheme PaperColor		" Use bright colorscheme for vimdiff
 endif
 
@@ -231,8 +233,14 @@ nnoremap \Q :nohlsearch<CR>:MarkClear<CR>
 nnoremap \t :setlocal expandtab!<CR>:setlocal softtabstop=4<CR>:retab!<CR>
 nnoremap \T :setlocal noexpandtab<CR>:setlocal tabstop=4<CR>:setlocal shiftwidth=4<CR>:retab!<CR>
 
-" Hotkeys for toggle of line numbers and paste mode
-nnoremap \l :setlocal relativenumber!<CR>
+" Hotkeys for toggle of line numbers
+if exists('+relativenumber')
+	nnoremap \l :let [&number, &relativenumber] = [!&relativenumber,&number+&relativenumber==1]<CR>
+else
+	nnoremap \l :setlocal number!<CR>
+endif
+
+" Hotkeys for toggle of paste mode
 nnoremap \p :setlocal paste!<CR>
 
 " Toggle showing trailing whitespaces
@@ -240,18 +248,6 @@ nnoremap \w :ShowTrailingWhitespaces<CR>
 
 " Toggle highlighting characters for long lines
 nnoremap \o :HightlighLongLines<CR>
-
-" Use tab for indention
-nnoremap <tab> >>
-nnoremap <S-tab> <<
-vnoremap <tab> >gv
-vnoremap <S-tab> <gv
-
-" Code folding shortcuts
-nnoremap <space> za			" Collapse current fold
-" nnoremap [ zM				" Collapse entire file
-" nnoremap ] zR				" Un-collapse entire file
-" vnoremap <space> zf
 
 " Change text encoding to Japanese Shift-JIS with Ctrl-J
 nnoremap <C-j> :setlocal encoding=sjis<CR>:setlocal fileencodings=cp932<CR>:e!<CR>
@@ -279,7 +275,7 @@ nnoremap j gj
 nnoremap k gk
 
 " Stop that window from popping up ;-)
-map q: :q
+nnoremap q: :q
 
 " Use buffers like tabs
 set hidden
@@ -398,13 +394,13 @@ endfunction
 
 " Srt Specific ----------------------------------------------------- {{{
 augroup SRT
-	au!
+	autocmd!
 
 	" Recognize srt files for syntax highlighting
-	au BufRead,BufNewFile *.srt		setfiletype srt
+	autocmd BufRead,BufNewFile *.srt		setfiletype srt
 
 	" Move to the next subtitle in a srt file
-	au BufRead *.srt nnoremap nn :execute "normal! /^\\d\\+$\rjjzz:setlocal nohlsearch\r"<cr>
+	autocmd BufRead *.srt nnoremap nn :execute "normal! /^\\d\\+$\rjjzz:setlocal nohlsearch\r"<cr>
 augroup END
 " }}}
 
@@ -412,14 +408,14 @@ augroup END
 " Mutt Specific ----------------------------------------------------- {{{
 " F1 through F3 re-wraps paragraphs in useful ways
 augroup MUTT
-	au!
-	au BufRead $HOME/.mutt/temp/mutt* set spell " <-- vim 7 required
-	au BufRead $HOME/.mutt/temp/mutt* nmap  <F1>	gqap
-	au BufRead $HOME/.mutt/temp/mutt* nmap  <F2>	gqqj
-	au BufRead $HOME/.mutt/temp/mutt* nmap  <F3>	kgqj
-	au BufRead $HOME/.mutt/temp/mutt* map!  <F1>	<ESC>gqapi
-	au BufRead $HOME/.mutt/temp/mutt* map!  <F2>	<ESC>gqqji
-	au BufRead $HOME/.mutt/temp/mutt* map!  <F3>	<ESC>kgqji
+	autocmd!
+	autocmd BufRead $HOME/.mutt/temp/mutt* set spell " <-- vim 7 required
+	autocmd BufRead $HOME/.mutt/temp/mutt* nmap  <F1>	gqap
+	autocmd BufRead $HOME/.mutt/temp/mutt* nmap  <F2>	gqqj
+	autocmd BufRead $HOME/.mutt/temp/mutt* nmap  <F3>	kgqj
+	autocmd BufRead $HOME/.mutt/temp/mutt* map!  <F1>	<ESC>gqapi
+	autocmd BufRead $HOME/.mutt/temp/mutt* map!  <F2>	<ESC>gqqji
+	autocmd BufRead $HOME/.mutt/temp/mutt* map!  <F3>	<ESC>kgqji
 augroup END
 " }}}
 
@@ -433,7 +429,13 @@ if has("autocmd")
 	autocmd BufReadPre *.c set cindent
 
 	" Clear trailing whitespace before a save
-	autocmd BufWritePre * :%s/\s\+$//e | retab
+	"autocmd BufWritePre * :%s/\s\+$//e | retab
+	
+	autocmd VimEnter * RainbowParenthesesToggle
+	autocmd Syntax * RainbowParenthesesLoadRound
+	autocmd Syntax * RainbowParenthesesLoadSquare
+	autocmd Syntax * RainbowParenthesesLoadBraces
+	autocmd Syntax * RainbowParenthesesLoadChevrons
 endif
 " }}}
 
